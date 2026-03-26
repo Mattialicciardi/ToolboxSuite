@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatture XML → Tabella · ToolboxSuite.work</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-hover: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #e5e5e5;
+      --text-muted: #888;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --radius: 8px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); text-decoration: none; margin-bottom: 1rem; transition: color 0.15s; }
+    .back-link:hover { color: var(--text); }
+    header { margin-bottom: 2rem; }
+    header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
+    .input-section { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    textarea { width: 100%; height: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; padding: 1rem; resize: vertical; outline: none; transition: border-color 0.15s; }
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: var(--text-muted); }
+    .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    button { padding: 0.5rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.375rem; }
+    button:hover { background: var(--surface-hover); border-color: #333; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.danger { color: var(--danger); }
+    button.danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 9999px; padding: 0.125rem 0.5rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-sans); font-weight: 500; }
+    .table-wrapper { border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 0.8125rem; }
+    thead { background: var(--surface); }
+    th { text-align: left; padding: 0.625rem 1rem; font-family: var(--font-sans); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none; position: relative; }
+    th.draggable { cursor: grab; }
+    th.draggable:active { cursor: grabbing; }
+    th.drag-over { background: rgba(59, 130, 246, 0.12); }
+    th.dragging { opacity: 0.4; }
+    th .drag-handle { display: inline-block; margin-right: 0.35rem; color: #444; font-size: 0.65rem; vertical-align: middle; }
+    td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--surface-hover); }
+    td.mono { font-family: var(--font-mono); font-size: 0.8rem; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.875rem; }
+    .field-selector { margin-top: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; background: var(--surface); }
+    .field-selector-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .field-selector-title { font-size: 0.8125rem; font-weight: 600; color: var(--text); }
+    .field-selector-hint { font-size: 0.7rem; color: var(--text-muted); }
+    .field-chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+    .field-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; font-family: var(--font-sans); font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); background: transparent; color: var(--text-muted); user-select: none; }
+    .field-chip:hover { border-color: #444; color: var(--text); }
+    .field-chip.active { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: var(--accent); }
+    .field-chip .chip-check { font-size: 0.65rem; }
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.625rem 1rem; border-radius: var(--radius); font-size: 0.8125rem; font-weight: 500; opacity: 0; transform: translateY(8px); transition: all 0.2s; z-index: 100; border: 1px solid; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: var(--success); }
+    .toast.error { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--danger); }
+    .drop-zone.dragover { border-color: var(--accent); background: rgba(59, 130, 246, 0.05); }
+    .hint { font-size: 0.75rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← ToolboxSuite.work</a>
+    <header>
+      <h1>Fatture XML → Tabella</h1>
+      <p>Incolla uno o più XML di fatture elettroniche (FatturaPA) e ottieni una tabella esportabile.</p>
+    </header>
+
+    <div class="input-section">
+      <textarea id="xmlInput" class="drop-zone" placeholder="Incolla qui l'XML della fattura elettronica (puoi incollare più XML uno dopo l'altro)..."></textarea>
+      <div class="actions">
+        <button class="primary" onclick="processXML()">Aggiungi fattura/e</button>
+        <button onclick="document.getElementById('fileInput').click()">Carica file XML</button>
+        <input type="file" id="fileInput" multiple accept=".xml,.p7m" style="display:none" onchange="handleFiles(this.files)">
+        <button onclick="exportXLSX()">Esporta .xlsx</button>
+        <button onclick="exportCSV()">Esporta .csv</button>
+        <button onclick="copyTable()">Copia tabella</button>
+        <button class="danger" onclick="clearAll()">Svuota tabella</button>
+        <span class="badge" id="counter">0 fatture</span>
+      </div>
+      <p class="hint">Puoi incollare XML, trascinare file .xml nella casella, oppure usare "Carica file XML" per selezionarli.</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr id="tableHead"></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="field-selector">
+      <div class="field-selector-header">
+        <span class="field-selector-title">Colonne visibili</span>
+        <span class="field-selector-hint">Clicca per aggiungere/rimuovere · Trascina gli header per riordinare</span>
+      </div>
+      <div class="field-chips" id="fieldChips"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // =============================================
+    // FIELD DEFINITIONS
+    // =============================================
+    var FIELDS = [
+      { id: 'denominazione', label: 'Denominazione Sociale', mono: false, defaultOn: true,
+        extract: function(doc, _body) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var d = getTagText(ced, 'Denominazione'); if (d) return d; var nome = getTagText(ced, 'Nome'); var cognome = getTagText(ced, 'Cognome'); return [nome, cognome].filter(Boolean).join(' '); }},
+      { id: 'numero', label: 'Numero Fattura', mono: true, defaultOn: true,
+        extract: function(doc, body) { return getTagText(body || doc, 'Numero'); }},
+      { id: 'importo', label: 'Importo Fattura', mono: true, defaultOn: true, format: 'currency',
+        extract: function(doc, body) { var src = body || doc; return getTagText(src, 'ImportoTotaleDocumento') || calcolaImponibilePiuIVA(src); }},
+      { id: 'dataScadenza', label: 'Data Scadenza', mono: true, defaultOn: true, format: 'date',
+        extract: function(doc, body) { return getTagText(body || doc, 'DataScadenzaPagamento'); }},
+      { id: 'iban', label: 'IBAN', mono: true, defaultOn: true,
+        extract: function(doc, body) { return getTagText(body || doc, 'IBAN'); }},
+      { id: 'partitaIva', label: 'Partita IVA', mono: true, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; return ced ? getTagText(ced, 'IdCodice') : ''; }},
+      { id: 'codiceFiscale', label: 'Codice Fiscale', mono: true, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; return ced ? getTagText(ced, 'CodiceFiscale') : ''; }},
+      { id: 'dataFattura', label: 'Data Fattura', mono: true, defaultOn: false, format: 'date',
+        extract: function(doc, body) { return getTagText(body || doc, 'Data'); }},
+      { id: 'tipoDocumento', label: 'Tipo Documento', mono: true, defaultOn: false,
+        extract: function(doc, body) { return getTagText(body || doc, 'TipoDocumento'); }},
+      { id: 'divisa', label: 'Divisa', mono: true, defaultOn: false,
+        extract: function(doc, body) { return getTagText(body || doc, 'Divisa'); }},
+      { id: 'causale', label: 'Causale', mono: false, defaultOn: false,
+        extract: function(doc, body) { return getTagText(body || doc, 'Causale'); }},
+      { id: 'modalitaPagamento', label: 'Modalità Pagamento', mono: true, defaultOn: false,
+        extract: function(doc, body) { return getTagText(body || doc, 'ModalitaPagamento'); }},
+      { id: 'condizioniPagamento', label: 'Condizioni Pagamento', mono: true, defaultOn: false,
+        extract: function(doc, body) { return getTagText(body || doc, 'CondizioniPagamento'); }},
+      { id: 'importoPagamento', label: 'Importo Pagamento', mono: true, defaultOn: false, format: 'currency',
+        extract: function(doc, body) { return getTagText(body || doc, 'ImportoPagamento'); }},
+      { id: 'codiceDestinatario', label: 'Codice Destinatario', mono: true, defaultOn: false,
+        extract: function(doc) { return getTagText(doc, 'CodiceDestinatario'); }},
+      { id: 'pecDestinatario', label: 'PEC Destinatario', mono: false, defaultOn: false,
+        extract: function(doc) { return getTagText(doc, 'PECDestinatario'); }},
+      { id: 'indirizzo', label: 'Indirizzo Sede', mono: false, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; if (!sede) return ''; return [getTagText(sede, 'Indirizzo'), getTagText(sede, 'NumeroCivico')].filter(Boolean).join(' '); }},
+      { id: 'cap', label: 'CAP', mono: true, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'CAP') : ''; }},
+      { id: 'comune', label: 'Comune', mono: false, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Comune') : ''; }},
+      { id: 'provincia', label: 'Provincia', mono: true, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Provincia') : ''; }},
+      { id: 'nazione', label: 'Nazione', mono: true, defaultOn: false,
+        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Nazione') : ''; }},
+      { id: 'imponibile', label: 'Imponibile', mono: true, defaultOn: false, format: 'currency',
+        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo'); var t = 0, f = false; for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'ImponibileImporto') || '0'); f = true; } return f ? t.toFixed(2) : ''; }},
+      { id: 'imposta', label: 'IVA (Imposta)', mono: true, defaultOn: false, format: 'currency',
+        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo'); var t = 0, f = false; for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'Imposta') || '0'); f = true; } return f ? t.toFixed(2) : ''; }},
+      { id: 'aliquotaIva', label: 'Aliquota IVA', mono: true, defaultOn: false,
+        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo')[0]; return riep ? getTagText(riep, 'AliquotaIVA') : ''; }}
+    ];
+
+    var FIELD_MAP = {};
+    for (var f = 0; f < FIELDS.length; f++) FIELD_MAP[FIELDS[f].id] = FIELDS[f];
+
+    // =============================================
+    // STATE
+    // =============================================
+    var invoices = [];
+    var activeColumns = [];
+    for (var f = 0; f < FIELDS.length; f++) { if (FIELDS[f].defaultOn) activeColumns.push(FIELDS[f].id); }
+
+    // =============================================
+    // XML HELPERS
+    // =============================================
+    function getTagText(el, tagName) {
+      var nodes = el.getElementsByTagName('*');
+      for (var i = 0; i < nodes.length; i++) { if (nodes[i].localName === tagName) return (nodes[i].textContent || '').trim(); }
+      return '';
+    }
+    function getAllByLocalName(el, tagName) {
+      var r = [], nodes = el.getElementsByTagName('*');
+      for (var i = 0; i < nodes.length; i++) { if (nodes[i].localName === tagName) r.push(nodes[i]); }
+      return r;
+    }
+    function calcolaImponibilePiuIVA(doc) {
+      var riep = getAllByLocalName(doc, 'DatiRiepilogo'), t = 0, f = false;
+      for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'ImponibileImporto') || '0') + parseFloat(getTagText(riep[i], 'Imposta') || '0'); f = true; }
+      return f ? t.toFixed(2) : '';
+    }
+
+    // =============================================
+    // PARSE
+    // =============================================
+    function parseInvoice(xmlDoc, body) {
+      var data = {};
+      for (var f = 0; f < FIELDS.length; f++) data[FIELDS[f].id] = FIELDS[f].extract(xmlDoc, body) || '';
+      return data;
+    }
+
+    // =============================================
+    // FORMAT
+    // =============================================
+    function formatDate(s) { if (!s) return 'vuoto'; var p = s.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : s; }
+    function formatCurrency(v) { if (!v) return 'vuoto'; var n = parseFloat(v); return isNaN(n) ? v : n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})+' \u20AC'; }
+    function formatValue(id, raw) { if (!raw) return 'vuoto'; var f = FIELD_MAP[id]; if (!f) return raw; if (f.format==='currency') return formatCurrency(raw); if (f.format==='date') return formatDate(raw); return raw; }
+
+    // =============================================
+    // SPLIT XMLs
+    // =============================================
+    function splitXMLs(text) {
+      var parts = text.split(/(?=<\?xml\s)/);
+      var xp = parts.map(function(p){return p.trim();}).filter(function(p){return p.length>0;});
+      if (xp.length > 1) return xp;
+      var rp = text.split(/(?=<(?:\w+:)?FatturaElettronica[\s>])/);
+      var fp = rp.map(function(p){return p.trim();}).filter(function(p){return p.length>0;});
+      if (fp.length > 1) return fp;
+      return [text.trim()];
+    }
+
+    // =============================================
+    // PROCESS XML
+    // =============================================
+    function processXML() {
+      var input = document.getElementById('xmlInput').value.trim();
+      if (!input) { showToast('Incolla prima un XML.', 'error'); return; }
+      var xmlTexts = splitXMLs(input), added = 0;
+      for (var t = 0; t < xmlTexts.length; t++) {
+        try {
+          var parser = new DOMParser();
+          var xmlDoc = parser.parseFromString(xmlTexts[t], 'text/xml');
+          if (xmlDoc.querySelector('parsererror')) continue;
+          var bodies = getAllByLocalName(xmlDoc, 'FatturaElettronicaBody');
+          if (bodies.length <= 1) {
+            var inv = parseInvoice(xmlDoc, bodies[0] || null);
+            if (inv.numero || inv.denominazione) { invoices.push(inv); added++; }
+          } else {
+            for (var b = 0; b < bodies.length; b++) { invoices.push(parseInvoice(xmlDoc, bodies[b])); added++; }
+          }
+        } catch (e) { console.error('Error processing XML:', e); }
+      }
+      if (added > 0) { renderTable(); document.getElementById('xmlInput').value = ''; showToast(added + ' fattura/e aggiunta/e.', 'success'); }
+      else { showToast('Nessuna fattura trovata nell\'XML. Verifica il formato.', 'error'); }
+    }
+
+    // =============================================
+    // RENDER TABLE
+    // =============================================
+    var dragSrcIndex = null;
+
+    function renderTable() {
+      renderHead(); renderBody();
+      document.getElementById('counter').textContent = invoices.length + ' fattur' + (invoices.length === 1 ? 'a' : 'e');
+    }
+
+    function renderHead() {
+      var thead = document.getElementById('tableHead');
+      while (thead.firstChild) thead.removeChild(thead.firstChild);
+      var thNum = document.createElement('th'); thNum.textContent = '#'; thead.appendChild(thNum);
+      for (var i = 0; i < activeColumns.length; i++) {
+        var field = FIELD_MAP[activeColumns[i]];
+        var th = document.createElement('th'); th.className = 'draggable'; th.setAttribute('draggable','true'); th.dataset.colIndex = i;
+        var handle = document.createElement('span'); handle.className = 'drag-handle'; handle.textContent = '\u2261'; th.appendChild(handle);
+        var label = document.createElement('span'); label.textContent = field.label; th.appendChild(label);
+        th.addEventListener('dragstart', onThDragStart); th.addEventListener('dragover', onThDragOver);
+        th.addEventListener('dragenter', onThDragEnter); th.addEventListener('dragleave', onThDragLeave);
+        th.addEventListener('drop', onThDrop); th.addEventListener('dragend', onThDragEnd);
+        thead.appendChild(th);
+      }
+    }
+
+    function renderBody() {
+      var tbody = document.getElementById('tableBody');
+      while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+      if (invoices.length === 0) {
+        var r = document.createElement('tr'), c = document.createElement('td');
+        c.setAttribute('colspan', String(activeColumns.length+1)); c.className = 'empty-state';
+        c.textContent = 'Nessuna fattura ancora. Incolla un XML e clicca "Aggiungi fattura/e".';
+        r.appendChild(c); tbody.appendChild(r); return;
+      }
+      for (var i = 0; i < invoices.length; i++) {
+        var inv = invoices[i], tr = document.createElement('tr');
+        var tdN = document.createElement('td'); tdN.className = 'mono'; tdN.textContent = String(i+1); tr.appendChild(tdN);
+        for (var c = 0; c < activeColumns.length; c++) {
+          var fid = activeColumns[c], field = FIELD_MAP[fid], td = document.createElement('td');
+          if (field.mono) td.className = 'mono'; td.textContent = formatValue(fid, inv[fid]); tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+
+    // =============================================
+    // COLUMN DRAG & DROP
+    // =============================================
+    function onThDragStart(e) { dragSrcIndex = parseInt(this.dataset.colIndex); this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragSrcIndex); }
+    function onThDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+    function onThDragEnter(e) { e.preventDefault(); this.classList.add('drag-over'); }
+    function onThDragLeave() { this.classList.remove('drag-over'); }
+    function onThDrop(e) {
+      e.preventDefault(); e.stopPropagation(); this.classList.remove('drag-over');
+      var ti = parseInt(this.dataset.colIndex); if (dragSrcIndex === null || dragSrcIndex === ti) return;
+      var moved = activeColumns.splice(dragSrcIndex, 1)[0]; activeColumns.splice(ti, 0, moved);
+      renderTable(); renderFieldChips();
+    }
+    function onThDragEnd() { this.classList.remove('dragging'); var ths = document.querySelectorAll('th.drag-over'); for (var i=0;i<ths.length;i++) ths[i].classList.remove('drag-over'); dragSrcIndex = null; }
+
+    // =============================================
+    // FIELD SELECTOR
+    // =============================================
+    function renderFieldChips() {
+      var container = document.getElementById('fieldChips');
+      while (container.firstChild) container.removeChild(container.firstChild);
+      var ordered = [];
+      for (var i = 0; i < activeColumns.length; i++) ordered.push({field: FIELD_MAP[activeColumns[i]], active: true});
+      for (var f = 0; f < FIELDS.length; f++) { if (activeColumns.indexOf(FIELDS[f].id) === -1) ordered.push({field: FIELDS[f], active: false}); }
+      for (var j = 0; j < ordered.length; j++) {
+        var item = ordered[j], chip = document.createElement('button');
+        chip.className = 'field-chip' + (item.active ? ' active' : ''); chip.dataset.fieldId = item.field.id;
+        var chk = document.createElement('span'); chk.className = 'chip-check'; chk.textContent = item.active ? '\u2713' : '+'; chip.appendChild(chk);
+        chip.appendChild(document.createTextNode(item.field.label));
+        chip.addEventListener('click', onChipClick); container.appendChild(chip);
+      }
+    }
+    function onChipClick() {
+      var fid = this.dataset.fieldId, idx = activeColumns.indexOf(fid);
+      if (idx !== -1) { if (activeColumns.length <= 1) { showToast('Devi avere almeno una colonna.', 'error'); return; } activeColumns.splice(idx, 1); }
+      else { activeColumns.push(fid); }
+      renderTable(); renderFieldChips();
+    }
+
+    // =============================================
+    // COPY TABLE
+    // =============================================
+    function copyTable() {
+      if (invoices.length === 0) { showToast('Nessuna fattura da copiare.', 'error'); return; }
+      var headers = [];
+      for (var c = 0; c < activeColumns.length; c++) headers.push(FIELD_MAP[activeColumns[c]].label);
+      var lines = [headers.join('\t')];
+      for (var i = 0; i < invoices.length; i++) {
+        var row = [];
+        for (var c = 0; c < activeColumns.length; c++) row.push(invoices[i][activeColumns[c]] || '');
+        lines.push(row.join('\t'));
+      }
+      navigator.clipboard.writeText(lines.join('\n')).then(function() {
+        showToast('Tabella copiata! Incollala in Excel o Google Sheets.', 'success');
+      }, function() { showToast('Errore nella copia. Riprova.', 'error'); });
+    }
+
+    // =============================================
+    // EXPORT
+    // =============================================
+    function getExportData() {
+      return invoices.map(function(inv) {
+        var row = {};
+        for (var c = 0; c < activeColumns.length; c++) {
+          var fid = activeColumns[c], field = FIELD_MAP[fid], val = inv[fid] || '';
+          if (field.format === 'currency' && val) row[field.label] = parseFloat(val) || val;
+          else if (field.format === 'date' && val) row[field.label] = formatDate(val);
+          else row[field.label] = val;
+        }
+        return row;
+      });
+    }
+    function exportXLSX() {
+      if (invoices.length === 0) { showToast('Nessuna fattura da esportare.', 'error'); return; }
+      var ws = XLSX.utils.json_to_sheet(getExportData()), cols = [];
+      for (var c = 0; c < activeColumns.length; c++) cols.push({wch: 22});
+      ws['!cols'] = cols; var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Fatture');
+      XLSX.writeFile(wb, 'fatture_' + getTimestamp() + '.xlsx'); showToast('File .xlsx esportato.', 'success');
+    }
+    function exportCSV() {
+      if (invoices.length === 0) { showToast('Nessuna fattura da esportare.', 'error'); return; }
+      var ws = XLSX.utils.json_to_sheet(getExportData());
+      var csv = XLSX.utils.sheet_to_csv(ws, {FS: ';'});
+      downloadFile(csv, 'fatture_' + getTimestamp() + '.csv', 'text/csv;charset=utf-8'); showToast('File .csv esportato.', 'success');
+    }
+    function downloadFile(content, name, mime) {
+      var blob = new Blob(['\uFEFF'+content], {type: mime}), url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
+    }
+    function getTimestamp() { var d = new Date(); return d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0'); }
+
+    // =============================================
+    // CLEAR & TOAST
+    // =============================================
+    function clearAll() { if (invoices.length > 0 && !confirm('Svuotare la tabella?')) return; invoices.length = 0; renderTable(); showToast('Tabella svuotata.', 'success'); }
+    function showToast(msg, type) { var t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(function(){t.classList.remove('show');}, 2500); }
+
+    // =============================================
+    // FILE HANDLING & DRAG DROP
+    // =============================================
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      var pending = files.length, allText = '';
+      for (var i = 0; i < files.length; i++) {
+        (function(file) {
+          var reader = new FileReader();
+          reader.onload = function(ev) { allText += ev.target.result + '\n'; pending--; if (pending === 0) { document.getElementById('xmlInput').value = allText; processXML(); document.getElementById('fileInput').value = ''; } };
+          reader.onerror = function() { pending--; showToast('Errore nella lettura di: ' + file.name, 'error'); if (pending === 0 && allText) { document.getElementById('xmlInput').value = allText; processXML(); } };
+          reader.readAsText(file);
+        })(files[i]);
+      }
+    }
+    var textarea = document.getElementById('xmlInput');
+    textarea.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = 'copy'; textarea.classList.add('dragover'); });
+    textarea.addEventListener('dragleave', function(e) { e.preventDefault(); textarea.classList.remove('dragover'); });
+    textarea.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); textarea.classList.remove('dragover'); if (e.dataTransfer.files && e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files); });
+
+    // =============================================
+    // INIT
+    // =============================================
+    renderTable();
+    renderFieldChips();
+  </script>
+</body>
+</html>
