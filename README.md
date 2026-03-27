@@ -56,12 +56,11 @@ Parser per fatture elettroniche italiane in formato **FatturaPA** (standard Agen
 ## Struttura del progetto
 
 ```
-fromXMLtoTable/
+ToolboxSuite/
 ├── index.html          # Landing page – ToolboxSuite.work
 ├── invoice-xml.html    # Strumento: parser fatture XML FatturaPA
 ├── README.md           # Questo file
-├── LICENSE             # Licenza MIT
-└── .gitignore          # File da escludere da git
+└── LICENSE             # Licenza MIT
 ```
 
 ---
