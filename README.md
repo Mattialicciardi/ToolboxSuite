@@ -1,4 +1,4 @@
-# 🤓 ToolboxSuite.work
+# 🐧 ToolboxSuite.work
 
 Raccolta di strumenti web per velocizzare il lavoro quotidiano.
 Tutto gira nel browser — nessun backend, nessun dato inviato a server.
