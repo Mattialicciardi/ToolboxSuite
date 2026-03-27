@@ -22,407 +22,1009 @@
       --danger: #ef4444;
       --success: #22c55e;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
       --radius: 8px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: var(--font-sans); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
     .back-link { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); text-decoration: none; margin-bottom: 1rem; transition: color 0.15s; }
     .back-link:hover { color: var(--text); }
     header { margin-bottom: 2rem; }
     header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
     header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
+
     .input-section { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
-    textarea { width: 100%; height: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; padding: 1rem; resize: vertical; outline: none; transition: border-color 0.15s; }
+    textarea { width: 100%; height: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; padding: 1rem; resize: vertical; outline: none; transition: border-color 0.15s; }
     textarea:focus { border-color: var(--accent); }
     textarea::placeholder { color: var(--text-muted); }
+    .hint { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Buttons */
     .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
-    button { padding: 0.5rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.375rem; }
+    button { padding: 0.5rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.375rem; white-space: nowrap; }
     button:hover { background: var(--surface-hover); border-color: #333; }
     button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
     button.danger { color: var(--danger); }
-    button.danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
-    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 9999px; padding: 0.125rem 0.5rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-sans); font-weight: 500; }
-    .table-wrapper { border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 0.8125rem; }
+    button.danger:hover { background: rgba(239,68,68,0.1); border-color: var(--danger); }
+    .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 9999px; padding: 0.125rem 0.625rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+    .badge-filtered { color: var(--accent); border-color: rgba(59,130,246,0.3); }
+
+    /* Dropdown */
+    .dropdown { position: relative; }
+    .dropdown-menu { display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 200; background: #1c1c1c; border: 1px solid var(--border); border-radius: var(--radius); min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); overflow: hidden; }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu.align-right { left: auto; right: 0; }
+    .export-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.625rem 1rem; font-size: 0.8125rem; cursor: pointer; color: var(--text); transition: background 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font-sans); font-weight: 500; }
+    .export-item:hover { background: var(--surface-hover); }
+    .export-item .ei-icon { width: 1.1rem; text-align: center; }
+    .export-sep { height: 1px; background: var(--border); }
+    .col-picker { padding: 0.5rem; min-width: 220px; max-height: 360px; overflow-y: auto; }
+    .col-picker-hint { font-size: 0.7rem; color: var(--text-muted); padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.375rem; }
+    .col-chip { display: flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.5rem; border-radius: 5px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.1s; color: var(--text-muted); border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font-sans); }
+    .col-chip:hover { background: var(--surface-hover); color: var(--text); }
+    .col-chip.active { color: var(--accent); }
+    .col-chip .ci { font-size: 0.65rem; width: 0.8rem; text-align: center; flex-shrink: 0; }
+
+    /* Table — resizable vertically like the textarea */
+    .table-wrapper {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: auto;
+      resize: vertical;
+      min-height: 220px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
     thead { background: var(--surface); }
-    th { text-align: left; padding: 0.625rem 1rem; font-family: var(--font-sans); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none; position: relative; }
+    th { text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none; }
     th.draggable { cursor: grab; }
     th.draggable:active { cursor: grabbing; }
-    th.drag-over { background: rgba(59, 130, 246, 0.12); }
+    th.drag-over { background: rgba(59,130,246,0.12); }
     th.dragging { opacity: 0.4; }
-    th .drag-handle { display: inline-block; margin-right: 0.35rem; color: #444; font-size: 0.65rem; vertical-align: middle; }
-    td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+
+    /* Header inner */
+    .th-inner { display: inline-flex; align-items: center; gap: 0.3rem; }
+    .drag-handle { color: #3a3a3a; font-size: 0.65rem; cursor: grab; flex-shrink: 0; }
+    .th-label { cursor: pointer; }
+    .th-label:hover { color: var(--text); }
+    .sort-icon { font-size: 0.6rem; color: #444; flex-shrink: 0; }
+    th.sorted-asc .sort-icon, th.sorted-desc .sort-icon { color: var(--accent); }
+
+    /* Filter icon */
+    .filter-btn { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: none; background: transparent; border-radius: 3px; cursor: pointer; padding: 0; transition: background 0.12s; flex-shrink: 0; opacity: 0; }
+    th:hover .filter-btn, .filter-btn.has-filter { opacity: 1; }
+    .filter-btn:hover { background: rgba(255,255,255,0.07); }
+
+    td { padding: 0.625rem 0.75rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
     tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: var(--surface-hover); }
     td.mono { font-family: var(--font-mono); font-size: 0.8rem; }
-    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.875rem; }
-    .field-selector { margin-top: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; background: var(--surface); }
-    .field-selector-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .field-selector-title { font-size: 0.8125rem; font-weight: 600; color: var(--text); }
-    .field-selector-hint { font-size: 0.7rem; color: var(--text-muted); }
-    .field-chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-    .field-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; font-family: var(--font-sans); font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); background: transparent; color: var(--text-muted); user-select: none; }
-    .field-chip:hover { border-color: #444; color: var(--text); }
-    .field-chip.active { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: var(--accent); }
-    .field-chip .chip-check { font-size: 0.65rem; }
-    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.625rem 1rem; border-radius: var(--radius); font-size: 0.8125rem; font-weight: 500; opacity: 0; transform: translateY(8px); transition: all 0.2s; z-index: 100; border: 1px solid; }
+    .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--text-muted); font-size: 0.875rem; }
+
+    /* Filter popover */
+    .filter-popover { display: none; position: fixed; z-index: 500; background: #1c1c1c; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.875rem; min-width: 210px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .filter-popover.open { display: block; }
+    .fp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+    .fp-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .fp-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: var(--font-sans); font-size: 0.8125rem; padding: 0.45rem 0.6rem; outline: none; transition: border-color 0.12s; }
+    .fp-input:focus { border-color: var(--accent); }
+    .fp-input::placeholder { color: #444; }
+    .fp-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+    .fp-tag { display: inline-flex; align-items: center; gap: 0.25rem; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35); border-radius: 9999px; padding: 0.2rem 0.35rem 0.2rem 0.6rem; font-size: 0.75rem; color: var(--accent); font-weight: 500; }
+    .fp-tag-x { background: none; border: none; padding: 1px 2px; color: var(--accent); cursor: pointer; font-size: 0.9rem; line-height: 1; display: flex; align-items: center; opacity: 0.6; font-family: var(--font-sans); }
+    .fp-tag-x:hover { opacity: 1; }
+    .fp-range-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+    .fp-range-label { font-size: 0.72rem; color: var(--text-muted); min-width: 2.2rem; flex-shrink: 0; text-align: right; }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
+    input[type="number"].fp-input::-webkit-inner-spin-button { opacity: 0.5; }
+
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.625rem 1rem; border-radius: var(--radius); font-size: 0.8125rem; font-weight: 500; opacity: 0; transform: translateY(8px); transition: all 0.2s; z-index: 600; border: 1px solid; }
     .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: var(--success); }
-    .toast.error { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--danger); }
-    .drop-zone.dragover { border-color: var(--accent); background: rgba(59, 130, 246, 0.05); }
-    .hint { font-size: 0.75rem; color: var(--text-muted); }
+    .toast.success { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: var(--success); }
+    .toast.error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: var(--danger); }
+    .drop-zone.dragover { border-color: var(--accent); background: rgba(59,130,246,0.05); }
+
+    /* Confirm dialog */
+    .dialog-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 800; align-items: center; justify-content: center; }
+    .dialog-overlay.open { display: flex; }
+    .dialog-box { background: #1c1c1c; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; width: 320px; max-width: calc(100vw - 2rem); box-shadow: 0 16px 40px rgba(0,0,0,0.7); }
+    .dialog-title { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .dialog-body { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <a href="index.html" class="back-link">← ToolboxSuite.work</a>
-    <header>
-      <h1>Fatture XML → Tabella</h1>
-      <p>Incolla uno o più XML di fatture elettroniche (FatturaPA) e ottieni una tabella esportabile.</p>
-    </header>
+<div class="container">
+  <a href="index.html" class="back-link">← ToolboxSuite.work</a>
+  <header>
+    <h1>Fatture XML → Tabella</h1>
+    <p>Incolla uno o più XML di fatture elettroniche (FatturaPA) e ottieni una tabella esportabile.</p>
+  </header>
 
-    <div class="input-section">
-      <textarea id="xmlInput" class="drop-zone" placeholder="Incolla qui l'XML della fattura elettronica (puoi incollare più XML uno dopo l'altro)..."></textarea>
-      <div class="actions">
-        <button class="primary" onclick="processXML()">Aggiungi fattura/e</button>
-        <button onclick="document.getElementById('fileInput').click()">Carica file XML</button>
-        <input type="file" id="fileInput" multiple accept=".xml,.p7m" style="display:none" onchange="handleFiles(this.files)">
-        <button onclick="exportXLSX()">Esporta .xlsx</button>
-        <button onclick="exportCSV()">Esporta .csv</button>
-        <button onclick="copyTable()">Copia tabella</button>
-        <button class="danger" onclick="clearAll()">Svuota tabella</button>
-        <span class="badge" id="counter">0 fatture</span>
+  <div class="input-section">
+    <textarea id="xmlInput" class="drop-zone" placeholder="Incolla qui l'XML della fattura elettronica (puoi incollare più XML uno dopo l'altro)..."></textarea>
+    <div class="actions">
+      <button class="primary" onclick="document.getElementById('fileInput').click()">Carica file XML</button>
+      <input type="file" id="fileInput" multiple accept=".xml,.p7m" style="display:none" onchange="handleFiles(this.files)">
+
+      <div class="dropdown" id="ddExport">
+        <button onclick="toggleDropdown('ddExport')">
+          Esporta
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="opacity:.5"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="dropdown-menu" id="menuExport">
+          <button class="export-item" onclick="exportXLSX();closeDropdown('ddExport')"><span class="ei-icon">📊</span>Excel (.xlsx)</button>
+          <button class="export-item" onclick="exportCSV();closeDropdown('ddExport')"><span class="ei-icon">📄</span>CSV (.csv)</button>
+          <div class="export-sep"></div>
+          <button class="export-item" onclick="copyTable();closeDropdown('ddExport')"><span class="ei-icon">📋</span>Copia negli appunti</button>
+        </div>
       </div>
-      <p class="hint">Puoi incollare XML, trascinare file .xml nella casella, oppure usare "Carica file XML" per selezionarli.</p>
-    </div>
 
-    <div class="table-wrapper">
-      <table>
-        <thead><tr id="tableHead"></tr></thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="field-selector">
-      <div class="field-selector-header">
-        <span class="field-selector-title">Colonne visibili</span>
-        <span class="field-selector-hint">Clicca per aggiungere/rimuovere · Trascina gli header per riordinare</span>
+      <div class="dropdown" id="ddCols">
+        <button onclick="toggleDropdown('ddCols');renderColPicker()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="4" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6" y="2" width="4" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="4" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+          Colonne
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="opacity:.5"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="dropdown-menu align-right" id="menuCols">
+          <div class="col-picker" id="colPicker"></div>
+        </div>
       </div>
-      <div class="field-chips" id="fieldChips"></div>
+
+      <button class="danger" onclick="clearAll()">Svuota</button>
+      <span class="badge" id="counter">0 fatture</span>
     </div>
+    <p class="hint">Puoi incollare XML, trascinare file .xml, oppure usare "Carica file XML".</p>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="table-wrapper">
+    <table>
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
 
-  <script>
-    // =============================================
-    // FIELD DEFINITIONS
-    // =============================================
-    var FIELDS = [
-      { id: 'denominazione', label: 'Denominazione Sociale', mono: false, defaultOn: true,
-        extract: function(doc, _body) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var d = getTagText(ced, 'Denominazione'); if (d) return d; var nome = getTagText(ced, 'Nome'); var cognome = getTagText(ced, 'Cognome'); return [nome, cognome].filter(Boolean).join(' '); }},
-      { id: 'numero', label: 'Numero Fattura', mono: true, defaultOn: true,
-        extract: function(doc, body) { return getTagText(body || doc, 'Numero'); }},
-      { id: 'importo', label: 'Importo Fattura', mono: true, defaultOn: true, format: 'currency',
-        extract: function(doc, body) { var src = body || doc; return getTagText(src, 'ImportoTotaleDocumento') || calcolaImponibilePiuIVA(src); }},
-      { id: 'dataScadenza', label: 'Data Scadenza', mono: true, defaultOn: true, format: 'date',
-        extract: function(doc, body) { return getTagText(body || doc, 'DataScadenzaPagamento'); }},
-      { id: 'iban', label: 'IBAN', mono: true, defaultOn: true,
-        extract: function(doc, body) { return getTagText(body || doc, 'IBAN'); }},
-      { id: 'partitaIva', label: 'Partita IVA', mono: true, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; return ced ? getTagText(ced, 'IdCodice') : ''; }},
-      { id: 'codiceFiscale', label: 'Codice Fiscale', mono: true, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; return ced ? getTagText(ced, 'CodiceFiscale') : ''; }},
-      { id: 'dataFattura', label: 'Data Fattura', mono: true, defaultOn: false, format: 'date',
-        extract: function(doc, body) { return getTagText(body || doc, 'Data'); }},
-      { id: 'tipoDocumento', label: 'Tipo Documento', mono: true, defaultOn: false,
-        extract: function(doc, body) { return getTagText(body || doc, 'TipoDocumento'); }},
-      { id: 'divisa', label: 'Divisa', mono: true, defaultOn: false,
-        extract: function(doc, body) { return getTagText(body || doc, 'Divisa'); }},
-      { id: 'causale', label: 'Causale', mono: false, defaultOn: false,
-        extract: function(doc, body) { return getTagText(body || doc, 'Causale'); }},
-      { id: 'modalitaPagamento', label: 'Modalità Pagamento', mono: true, defaultOn: false,
-        extract: function(doc, body) { return getTagText(body || doc, 'ModalitaPagamento'); }},
-      { id: 'condizioniPagamento', label: 'Condizioni Pagamento', mono: true, defaultOn: false,
-        extract: function(doc, body) { return getTagText(body || doc, 'CondizioniPagamento'); }},
-      { id: 'importoPagamento', label: 'Importo Pagamento', mono: true, defaultOn: false, format: 'currency',
-        extract: function(doc, body) { return getTagText(body || doc, 'ImportoPagamento'); }},
-      { id: 'codiceDestinatario', label: 'Codice Destinatario', mono: true, defaultOn: false,
-        extract: function(doc) { return getTagText(doc, 'CodiceDestinatario'); }},
-      { id: 'pecDestinatario', label: 'PEC Destinatario', mono: false, defaultOn: false,
-        extract: function(doc) { return getTagText(doc, 'PECDestinatario'); }},
-      { id: 'indirizzo', label: 'Indirizzo Sede', mono: false, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; if (!sede) return ''; return [getTagText(sede, 'Indirizzo'), getTagText(sede, 'NumeroCivico')].filter(Boolean).join(' '); }},
-      { id: 'cap', label: 'CAP', mono: true, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'CAP') : ''; }},
-      { id: 'comune', label: 'Comune', mono: false, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Comune') : ''; }},
-      { id: 'provincia', label: 'Provincia', mono: true, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Provincia') : ''; }},
-      { id: 'nazione', label: 'Nazione', mono: true, defaultOn: false,
-        extract: function(doc) { var ced = getAllByLocalName(doc, 'CedentePrestatore')[0]; if (!ced) return ''; var sede = getAllByLocalName(ced, 'Sede')[0]; return sede ? getTagText(sede, 'Nazione') : ''; }},
-      { id: 'imponibile', label: 'Imponibile', mono: true, defaultOn: false, format: 'currency',
-        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo'); var t = 0, f = false; for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'ImponibileImporto') || '0'); f = true; } return f ? t.toFixed(2) : ''; }},
-      { id: 'imposta', label: 'IVA (Imposta)', mono: true, defaultOn: false, format: 'currency',
-        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo'); var t = 0, f = false; for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'Imposta') || '0'); f = true; } return f ? t.toFixed(2) : ''; }},
-      { id: 'aliquotaIva', label: 'Aliquota IVA', mono: true, defaultOn: false,
-        extract: function(doc, body) { var riep = getAllByLocalName(body || doc, 'DatiRiepilogo')[0]; return riep ? getTagText(riep, 'AliquotaIVA') : ''; }}
-    ];
+<!-- Filter popover -->
+<div class="filter-popover" id="filterPopover">
+  <div class="fp-header">
+    <div class="fp-label" id="fpLabel">Filtra</div>
+  </div>
+  <!-- Text mode -->
+  <div id="fpTextMode">
+    <input class="fp-input" id="fpInput" type="text" placeholder="Digita e premi Invio…" autocomplete="off">
+    <div class="fp-tags" id="fpTags"></div>
+  </div>
+  <!-- Date range mode -->
+  <div id="fpDateMode" style="display:none">
+    <div class="fp-range-row"><span class="fp-range-label">Da</span><input class="fp-input" id="fpDateFrom" type="date"></div>
+    <div class="fp-range-row"><span class="fp-range-label">A</span><input class="fp-input" id="fpDateTo" type="date"></div>
+  </div>
+  <!-- Currency range mode -->
+  <div id="fpCurrencyMode" style="display:none">
+    <div class="fp-range-row"><span class="fp-range-label">Min €</span><input class="fp-input" id="fpCurrencyMin" type="number" min="0" step="0.01" placeholder="0"></div>
+    <div class="fp-range-row"><span class="fp-range-label">Max €</span><input class="fp-input" id="fpCurrencyMax" type="number" min="0" step="0.01" placeholder="∞"></div>
+  </div>
+</div>
 
-    var FIELD_MAP = {};
-    for (var f = 0; f < FIELDS.length; f++) FIELD_MAP[FIELDS[f].id] = FIELDS[f];
+<div class="dialog-overlay" id="confirmDialog">
+  <div class="dialog-box">
+    <div class="dialog-title">Svuotare la tabella?</div>
+    <div class="dialog-body">Tutte le fatture caricate verranno rimosse. L'operazione non è reversibile.</div>
+    <div class="dialog-actions">
+      <button onclick="closeConfirmDialog()">Annulla</button>
+      <button class="danger" onclick="confirmClearAll()">Svuota</button>
+    </div>
+  </div>
+</div>
 
-    // =============================================
-    // STATE
-    // =============================================
-    var invoices = [];
-    var activeColumns = [];
-    for (var f = 0; f < FIELDS.length; f++) { if (FIELDS[f].defaultOn) activeColumns.push(FIELDS[f].id); }
+<div class="toast" id="toast"></div>
 
-    // =============================================
-    // XML HELPERS
-    // =============================================
-    function getTagText(el, tagName) {
-      var nodes = el.getElementsByTagName('*');
-      for (var i = 0; i < nodes.length; i++) { if (nodes[i].localName === tagName) return (nodes[i].textContent || '').trim(); }
-      return '';
+<script>
+  // =============================================
+  // FIELDS
+  // =============================================
+  var FIELDS = [
+    { id:'denominazione', label:'Denominazione Sociale', mono:false, defaultOn:true,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var d=getTagText(c,'Denominazione');if(d)return d;return[getTagText(c,'Nome'),getTagText(c,'Cognome')].filter(Boolean).join(' ');}},
+    { id:'numero', label:'Numero Fattura', mono:true, defaultOn:true,
+      extract:function(doc,body){return getTagText(body||doc,'Numero');}},
+    { id:'importo', label:'Importo Fattura', mono:true, defaultOn:true, format:'currency',
+      extract:function(doc,body){var s=body||doc;return getTagText(s,'ImportoTotaleDocumento')||calcolaImponibilePiuIVA(s);}},
+    { id:'dataScadenza', label:'Data Scadenza', mono:true, defaultOn:true, format:'date',
+      extract:function(doc,body){return getTagText(body||doc,'DataScadenzaPagamento');}},
+    { id:'iban', label:'IBAN', mono:true, defaultOn:true,
+      extract:function(doc,body){return getTagText(body||doc,'IBAN');}},
+    { id:'partitaIva', label:'Partita IVA', mono:true, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];return c?getTagText(c,'IdCodice'):'';}},
+    { id:'codiceFiscale', label:'Codice Fiscale', mono:true, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];return c?getTagText(c,'CodiceFiscale'):'';}},
+    { id:'dataFattura', label:'Data Fattura', mono:true, defaultOn:false, format:'date',
+      extract:function(doc,body){return getTagText(body||doc,'Data');}},
+    { id:'tipoDocumento', label:'Tipo Documento', mono:true, defaultOn:false,
+      extract:function(doc,body){return getTagText(body||doc,'TipoDocumento');}},
+    { id:'divisa', label:'Divisa', mono:true, defaultOn:false,
+      extract:function(doc,body){return getTagText(body||doc,'Divisa');}},
+    { id:'causale', label:'Causale', mono:false, defaultOn:false,
+      extract:function(doc,body){return getTagText(body||doc,'Causale');}},
+    { id:'modalitaPagamento', label:'Modalità Pagamento', mono:true, defaultOn:false,
+      extract:function(doc,body){return getTagText(body||doc,'ModalitaPagamento');}},
+    { id:'condizioniPagamento', label:'Condizioni Pagamento', mono:true, defaultOn:false,
+      extract:function(doc,body){return getTagText(body||doc,'CondizioniPagamento');}},
+    { id:'importoPagamento', label:'Importo Pagamento', mono:true, defaultOn:false, format:'currency',
+      extract:function(doc,body){return getTagText(body||doc,'ImportoPagamento');}},
+    { id:'codiceDestinatario', label:'Codice Destinatario', mono:true, defaultOn:false,
+      extract:function(doc){return getTagText(doc,'CodiceDestinatario');}},
+    { id:'pecDestinatario', label:'PEC Destinatario', mono:false, defaultOn:false,
+      extract:function(doc){return getTagText(doc,'PECDestinatario');}},
+    { id:'indirizzo', label:'Indirizzo Sede', mono:false, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var s=getAllByLocalName(c,'Sede')[0];if(!s)return'';return[getTagText(s,'Indirizzo'),getTagText(s,'NumeroCivico')].filter(Boolean).join(' ');}},
+    { id:'cap', label:'CAP', mono:true, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var s=getAllByLocalName(c,'Sede')[0];return s?getTagText(s,'CAP'):'';}},
+    { id:'comune', label:'Comune', mono:false, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var s=getAllByLocalName(c,'Sede')[0];return s?getTagText(s,'Comune'):'';}},
+    { id:'provincia', label:'Provincia', mono:true, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var s=getAllByLocalName(c,'Sede')[0];return s?getTagText(s,'Provincia'):'';}},
+    { id:'nazione', label:'Nazione', mono:true, defaultOn:false,
+      extract:function(doc){var c=getAllByLocalName(doc,'CedentePrestatore')[0];if(!c)return'';var s=getAllByLocalName(c,'Sede')[0];return s?getTagText(s,'Nazione'):'';}},
+    { id:'imponibile', label:'Imponibile', mono:true, defaultOn:false, format:'currency',
+      extract:function(doc,body){var r=getAllByLocalName(body||doc,'DatiRiepilogo'),t=0,f=false;for(var i=0;i<r.length;i++){t+=parseFloat(getTagText(r[i],'ImponibileImporto')||'0');f=true;}return f?t.toFixed(2):'';}},
+    { id:'imposta', label:'IVA (Imposta)', mono:true, defaultOn:false, format:'currency',
+      extract:function(doc,body){var r=getAllByLocalName(body||doc,'DatiRiepilogo'),t=0,f=false;for(var i=0;i<r.length;i++){t+=parseFloat(getTagText(r[i],'Imposta')||'0');f=true;}return f?t.toFixed(2):'';}},
+    { id:'aliquotaIva', label:'Aliquota IVA', mono:true, defaultOn:false,
+      extract:function(doc,body){var r=getAllByLocalName(body||doc,'DatiRiepilogo')[0];return r?getTagText(r,'AliquotaIVA'):'';}}
+  ];
+  var FIELD_MAP={};
+  FIELDS.forEach(function(f){FIELD_MAP[f.id]=f;});
+
+  // =============================================
+  // STATE
+  // =============================================
+  var invoices=[];
+  var activeColumns=FIELDS.filter(function(f){return f.defaultOn;}).map(function(f){return f.id;});
+  var sortState={id:null,dir:null};
+  var filterState={};
+  var dragSrcIndex=null;
+  var dragJustHappened=false;
+  var activeFilterCol=null;
+
+  // =============================================
+  // XML HELPERS
+  // =============================================
+  function getTagText(el,tag){var n=el.getElementsByTagName('*');for(var i=0;i<n.length;i++)if(n[i].localName===tag)return(n[i].textContent||'').trim();return'';}
+  function getAllByLocalName(el,tag){var r=[],n=el.getElementsByTagName('*');for(var i=0;i<n.length;i++)if(n[i].localName===tag)r.push(n[i]);return r;}
+  function calcolaImponibilePiuIVA(doc){var r=getAllByLocalName(doc,'DatiRiepilogo'),t=0,f=false;for(var i=0;i<r.length;i++){t+=parseFloat(getTagText(r[i],'ImponibileImporto')||'0')+parseFloat(getTagText(r[i],'Imposta')||'0');f=true;}return f?t.toFixed(2):'';}
+
+  // =============================================
+  // FORMAT
+  // =============================================
+  function formatDate(s){if(!s)return'vuoto';var p=s.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:s;}
+  function formatCurrency(v){if(!v)return'vuoto';var n=parseFloat(v);return isNaN(n)?v:n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
+  function formatValue(id,raw){if(!raw)return'vuoto';var f=FIELD_MAP[id];if(!f)return raw;if(f.format==='currency')return formatCurrency(raw);if(f.format==='date')return formatDate(raw);return raw;}
+
+  // =============================================
+  // SPLIT XMLs
+  // =============================================
+  function splitXMLs(text){
+    var p=text.split(/(?=<\?xml\s)/),xp=p.map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+    if(xp.length>1)return xp;
+    var r=text.split(/(?=<(?:\w+:)?FatturaElettronica[\s>])/),fp=r.map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+    if(fp.length>1)return fp;
+    return[text.trim()];
+  }
+
+  // =============================================
+  // PROCESS XML
+  // =============================================
+  function parseInvoice(xmlDoc,body){var d={};FIELDS.forEach(function(f){d[f.id]=f.extract(xmlDoc,body)||'';});return d;}
+
+  function processXML(){
+    var input=document.getElementById('xmlInput').value.trim();
+    if(!input){showToast('Incolla prima un XML.','error');return;}
+    var texts=splitXMLs(input),added=0;
+    for(var t=0;t<texts.length;t++){
+      try{
+        var parser=new DOMParser(),xmlDoc=parser.parseFromString(texts[t],'text/xml');
+        if(xmlDoc.querySelector('parsererror'))continue;
+        var bodies=getAllByLocalName(xmlDoc,'FatturaElettronicaBody');
+        if(bodies.length<=1){var inv=parseInvoice(xmlDoc,bodies[0]||null);if(inv.numero||inv.denominazione){invoices.push(inv);added++;}}
+        else{for(var b=0;b<bodies.length;b++){invoices.push(parseInvoice(xmlDoc,bodies[b]));added++;}}
+      }catch(e){console.error(e);}
     }
-    function getAllByLocalName(el, tagName) {
-      var r = [], nodes = el.getElementsByTagName('*');
-      for (var i = 0; i < nodes.length; i++) { if (nodes[i].localName === tagName) r.push(nodes[i]); }
-      return r;
-    }
-    function calcolaImponibilePiuIVA(doc) {
-      var riep = getAllByLocalName(doc, 'DatiRiepilogo'), t = 0, f = false;
-      for (var i = 0; i < riep.length; i++) { t += parseFloat(getTagText(riep[i], 'ImponibileImporto') || '0') + parseFloat(getTagText(riep[i], 'Imposta') || '0'); f = true; }
-      return f ? t.toFixed(2) : '';
-    }
+    if(added>0){renderAll();document.getElementById('xmlInput').value='';showToast(added+' fattura/e aggiunta/e.','success');}
+    else showToast('Nessuna fattura trovata. Verifica il formato XML.','error');
+  }
 
-    // =============================================
-    // PARSE
-    // =============================================
-    function parseInvoice(xmlDoc, body) {
-      var data = {};
-      for (var f = 0; f < FIELDS.length; f++) data[FIELDS[f].id] = FIELDS[f].extract(xmlDoc, body) || '';
-      return data;
-    }
+  // =============================================
+  // VIEW (filter + sort)
+  // =============================================
+  function hasActiveFilter(colId){
+    var fs=filterState[colId];
+    if(!fs)return false;
+    if(Array.isArray(fs))return fs.length>0;
+    return !!(fs.from||fs.to||fs.min||fs.max);
+  }
 
-    // =============================================
-    // FORMAT
-    // =============================================
-    function formatDate(s) { if (!s) return 'vuoto'; var p = s.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : s; }
-    function formatCurrency(v) { if (!v) return 'vuoto'; var n = parseFloat(v); return isNaN(n) ? v : n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})+' \u20AC'; }
-    function formatValue(id, raw) { if (!raw) return 'vuoto'; var f = FIELD_MAP[id]; if (!f) return raw; if (f.format==='currency') return formatCurrency(raw); if (f.format==='date') return formatDate(raw); return raw; }
-
-    // =============================================
-    // SPLIT XMLs
-    // =============================================
-    function splitXMLs(text) {
-      var parts = text.split(/(?=<\?xml\s)/);
-      var xp = parts.map(function(p){return p.trim();}).filter(function(p){return p.length>0;});
-      if (xp.length > 1) return xp;
-      var rp = text.split(/(?=<(?:\w+:)?FatturaElettronica[\s>])/);
-      var fp = rp.map(function(p){return p.trim();}).filter(function(p){return p.length>0;});
-      if (fp.length > 1) return fp;
-      return [text.trim()];
-    }
-
-    // =============================================
-    // PROCESS XML
-    // =============================================
-    function processXML() {
-      var input = document.getElementById('xmlInput').value.trim();
-      if (!input) { showToast('Incolla prima un XML.', 'error'); return; }
-      var xmlTexts = splitXMLs(input), added = 0;
-      for (var t = 0; t < xmlTexts.length; t++) {
-        try {
-          var parser = new DOMParser();
-          var xmlDoc = parser.parseFromString(xmlTexts[t], 'text/xml');
-          if (xmlDoc.querySelector('parsererror')) continue;
-          var bodies = getAllByLocalName(xmlDoc, 'FatturaElettronicaBody');
-          if (bodies.length <= 1) {
-            var inv = parseInvoice(xmlDoc, bodies[0] || null);
-            if (inv.numero || inv.denominazione) { invoices.push(inv); added++; }
+  function getDisplayedInvoices(){
+    var result=invoices.slice();
+    var active=Object.keys(filterState).filter(function(k){return hasActiveFilter(k);});
+    if(active.length>0){
+      result=result.filter(function(inv){
+        return active.every(function(fid){
+          var fs=filterState[fid];
+          var field=FIELD_MAP[fid];
+          var type=field?field.format:'text';
+          if(type==='date'){
+            var raw=inv[fid]||'';
+            if((fs.from||fs.to)&&!raw)return false;
+            if(fs.from&&raw<fs.from)return false;
+            if(fs.to&&raw>fs.to)return false;
+            return true;
+          } else if(type==='currency'){
+            var amount=parseFloat(inv[fid])||0;
+            if(fs.min!==''&&fs.min!==null&&!isNaN(parseFloat(fs.min))&&amount<parseFloat(fs.min))return false;
+            if(fs.max!==''&&fs.max!==null&&!isNaN(parseFloat(fs.max))&&amount>parseFloat(fs.max))return false;
+            return true;
           } else {
-            for (var b = 0; b < bodies.length; b++) { invoices.push(parseInvoice(xmlDoc, bodies[b])); added++; }
+            var raw2=(inv[fid]||'').toLowerCase();
+            var fmt=formatValue(fid,inv[fid]).toLowerCase();
+            return fs.some(function(tag){var q=tag.toLowerCase();return raw2.indexOf(q)!==-1||fmt.indexOf(q)!==-1;});
           }
-        } catch (e) { console.error('Error processing XML:', e); }
-      }
-      if (added > 0) { renderTable(); document.getElementById('xmlInput').value = ''; showToast(added + ' fattura/e aggiunta/e.', 'success'); }
-      else { showToast('Nessuna fattura trovata nell\'XML. Verifica il formato.', 'error'); }
-    }
-
-    // =============================================
-    // RENDER TABLE
-    // =============================================
-    var dragSrcIndex = null;
-
-    function renderTable() {
-      renderHead(); renderBody();
-      document.getElementById('counter').textContent = invoices.length + ' fattur' + (invoices.length === 1 ? 'a' : 'e');
-    }
-
-    function renderHead() {
-      var thead = document.getElementById('tableHead');
-      while (thead.firstChild) thead.removeChild(thead.firstChild);
-      var thNum = document.createElement('th'); thNum.textContent = '#'; thead.appendChild(thNum);
-      for (var i = 0; i < activeColumns.length; i++) {
-        var field = FIELD_MAP[activeColumns[i]];
-        var th = document.createElement('th'); th.className = 'draggable'; th.setAttribute('draggable','true'); th.dataset.colIndex = i;
-        var handle = document.createElement('span'); handle.className = 'drag-handle'; handle.textContent = '\u2261'; th.appendChild(handle);
-        var label = document.createElement('span'); label.textContent = field.label; th.appendChild(label);
-        th.addEventListener('dragstart', onThDragStart); th.addEventListener('dragover', onThDragOver);
-        th.addEventListener('dragenter', onThDragEnter); th.addEventListener('dragleave', onThDragLeave);
-        th.addEventListener('drop', onThDrop); th.addEventListener('dragend', onThDragEnd);
-        thead.appendChild(th);
-      }
-    }
-
-    function renderBody() {
-      var tbody = document.getElementById('tableBody');
-      while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
-      if (invoices.length === 0) {
-        var r = document.createElement('tr'), c = document.createElement('td');
-        c.setAttribute('colspan', String(activeColumns.length+1)); c.className = 'empty-state';
-        c.textContent = 'Nessuna fattura ancora. Incolla un XML e clicca "Aggiungi fattura/e".';
-        r.appendChild(c); tbody.appendChild(r); return;
-      }
-      for (var i = 0; i < invoices.length; i++) {
-        var inv = invoices[i], tr = document.createElement('tr');
-        var tdN = document.createElement('td'); tdN.className = 'mono'; tdN.textContent = String(i+1); tr.appendChild(tdN);
-        for (var c = 0; c < activeColumns.length; c++) {
-          var fid = activeColumns[c], field = FIELD_MAP[fid], td = document.createElement('td');
-          if (field.mono) td.className = 'mono'; td.textContent = formatValue(fid, inv[fid]); tr.appendChild(td);
-        }
-        tbody.appendChild(tr);
-      }
-    }
-
-    // =============================================
-    // COLUMN DRAG & DROP
-    // =============================================
-    function onThDragStart(e) { dragSrcIndex = parseInt(this.dataset.colIndex); this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragSrcIndex); }
-    function onThDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
-    function onThDragEnter(e) { e.preventDefault(); this.classList.add('drag-over'); }
-    function onThDragLeave() { this.classList.remove('drag-over'); }
-    function onThDrop(e) {
-      e.preventDefault(); e.stopPropagation(); this.classList.remove('drag-over');
-      var ti = parseInt(this.dataset.colIndex); if (dragSrcIndex === null || dragSrcIndex === ti) return;
-      var moved = activeColumns.splice(dragSrcIndex, 1)[0]; activeColumns.splice(ti, 0, moved);
-      renderTable(); renderFieldChips();
-    }
-    function onThDragEnd() { this.classList.remove('dragging'); var ths = document.querySelectorAll('th.drag-over'); for (var i=0;i<ths.length;i++) ths[i].classList.remove('drag-over'); dragSrcIndex = null; }
-
-    // =============================================
-    // FIELD SELECTOR
-    // =============================================
-    function renderFieldChips() {
-      var container = document.getElementById('fieldChips');
-      while (container.firstChild) container.removeChild(container.firstChild);
-      var ordered = [];
-      for (var i = 0; i < activeColumns.length; i++) ordered.push({field: FIELD_MAP[activeColumns[i]], active: true});
-      for (var f = 0; f < FIELDS.length; f++) { if (activeColumns.indexOf(FIELDS[f].id) === -1) ordered.push({field: FIELDS[f], active: false}); }
-      for (var j = 0; j < ordered.length; j++) {
-        var item = ordered[j], chip = document.createElement('button');
-        chip.className = 'field-chip' + (item.active ? ' active' : ''); chip.dataset.fieldId = item.field.id;
-        var chk = document.createElement('span'); chk.className = 'chip-check'; chk.textContent = item.active ? '\u2713' : '+'; chip.appendChild(chk);
-        chip.appendChild(document.createTextNode(item.field.label));
-        chip.addEventListener('click', onChipClick); container.appendChild(chip);
-      }
-    }
-    function onChipClick() {
-      var fid = this.dataset.fieldId, idx = activeColumns.indexOf(fid);
-      if (idx !== -1) { if (activeColumns.length <= 1) { showToast('Devi avere almeno una colonna.', 'error'); return; } activeColumns.splice(idx, 1); }
-      else { activeColumns.push(fid); }
-      renderTable(); renderFieldChips();
-    }
-
-    // =============================================
-    // COPY TABLE
-    // =============================================
-    function copyTable() {
-      if (invoices.length === 0) { showToast('Nessuna fattura da copiare.', 'error'); return; }
-      var headers = [];
-      for (var c = 0; c < activeColumns.length; c++) headers.push(FIELD_MAP[activeColumns[c]].label);
-      var lines = [headers.join('\t')];
-      for (var i = 0; i < invoices.length; i++) {
-        var row = [];
-        for (var c = 0; c < activeColumns.length; c++) row.push(invoices[i][activeColumns[c]] || '');
-        lines.push(row.join('\t'));
-      }
-      navigator.clipboard.writeText(lines.join('\n')).then(function() {
-        showToast('Tabella copiata! Incollala in Excel o Google Sheets.', 'success');
-      }, function() { showToast('Errore nella copia. Riprova.', 'error'); });
-    }
-
-    // =============================================
-    // EXPORT
-    // =============================================
-    function getExportData() {
-      return invoices.map(function(inv) {
-        var row = {};
-        for (var c = 0; c < activeColumns.length; c++) {
-          var fid = activeColumns[c], field = FIELD_MAP[fid], val = inv[fid] || '';
-          if (field.format === 'currency' && val) row[field.label] = parseFloat(val) || val;
-          else if (field.format === 'date' && val) row[field.label] = formatDate(val);
-          else row[field.label] = val;
-        }
-        return row;
+        });
       });
     }
-    function exportXLSX() {
-      if (invoices.length === 0) { showToast('Nessuna fattura da esportare.', 'error'); return; }
-      var ws = XLSX.utils.json_to_sheet(getExportData()), cols = [];
-      for (var c = 0; c < activeColumns.length; c++) cols.push({wch: 22});
-      ws['!cols'] = cols; var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Fatture');
-      XLSX.writeFile(wb, 'fatture_' + getTimestamp() + '.xlsx'); showToast('File .xlsx esportato.', 'success');
+    if(sortState.id&&sortState.dir){
+      var sid=sortState.id,dir=sortState.dir,field=FIELD_MAP[sid];
+      result.sort(function(a,b){
+        var av=a[sid]||'',bv=b[sid]||'',cmp;
+        if(field&&field.format==='currency')cmp=(parseFloat(av)||0)-(parseFloat(bv)||0);
+        else if(field&&field.format==='date')cmp=av.localeCompare(bv);
+        else cmp=av.localeCompare(bv,'it',{numeric:true,sensitivity:'base'});
+        return dir==='asc'?cmp:-cmp;
+      });
     }
-    function exportCSV() {
-      if (invoices.length === 0) { showToast('Nessuna fattura da esportare.', 'error'); return; }
-      var ws = XLSX.utils.json_to_sheet(getExportData());
-      var csv = XLSX.utils.sheet_to_csv(ws, {FS: ';'});
-      downloadFile(csv, 'fatture_' + getTimestamp() + '.csv', 'text/csv;charset=utf-8'); showToast('File .csv esportato.', 'success');
-    }
-    function downloadFile(content, name, mime) {
-      var blob = new Blob(['\uFEFF'+content], {type: mime}), url = URL.createObjectURL(blob);
-      var a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
-    }
-    function getTimestamp() { var d = new Date(); return d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0'); }
+    return result;
+  }
 
-    // =============================================
-    // CLEAR & TOAST
-    // =============================================
-    function clearAll() { if (invoices.length > 0 && !confirm('Svuotare la tabella?')) return; invoices.length = 0; renderTable(); showToast('Tabella svuotata.', 'success'); }
-    function showToast(msg, type) { var t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(function(){t.classList.remove('show');}, 2500); }
+  // =============================================
+  // RENDER
+  // =============================================
+  function renderAll(){renderHead();renderBody();updateCounter();}
 
-    // =============================================
-    // FILE HANDLING & DRAG DROP
-    // =============================================
-    function handleFiles(files) {
-      if (!files || files.length === 0) return;
-      var pending = files.length, allText = '';
-      for (var i = 0; i < files.length; i++) {
-        (function(file) {
-          var reader = new FileReader();
-          reader.onload = function(ev) { allText += ev.target.result + '\n'; pending--; if (pending === 0) { document.getElementById('xmlInput').value = allText; processXML(); document.getElementById('fileInput').value = ''; } };
-          reader.onerror = function() { pending--; showToast('Errore nella lettura di: ' + file.name, 'error'); if (pending === 0 && allText) { document.getElementById('xmlInput').value = allText; processXML(); } };
-          reader.readAsText(file);
-        })(files[i]);
+  function updateCounter(){
+    var shown=getDisplayedInvoices().length,total=invoices.length;
+    var badge=document.getElementById('counter');
+    badge.textContent=shown<total?(shown+' di '+total+' fatture'):(total+' fattur'+(total===1?'a':'e'));
+    shown<total?badge.classList.add('badge-filtered'):badge.classList.remove('badge-filtered');
+  }
+
+  // Funnel icon via safe DOM (no innerHTML)
+  var SVG_NS='http://www.w3.org/2000/svg';
+  function createFunnelIcon(filled){
+    var svg=document.createElementNS(SVG_NS,'svg');
+    svg.setAttribute('width','11');svg.setAttribute('height','11');
+    svg.setAttribute('viewBox','0 0 12 12');svg.setAttribute('fill','none');
+    var path=document.createElementNS(SVG_NS,'path');
+    path.setAttribute('d','M1 2h10L7 6v4l-2-1V6L1 2z');
+    var color=filled?'var(--accent)':'currentColor';
+    path.setAttribute('stroke',color);path.setAttribute('stroke-width','1.2');
+    path.setAttribute('stroke-linejoin','round');
+    if(filled)path.setAttribute('fill',color);
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function refreshFilterBtn(colId){
+    var th=document.querySelector('th[data-col-id="'+colId+'"]');
+    if(!th)return;
+    var fb=th.querySelector('.filter-btn');
+    if(!fb)return;
+    var hasF=hasActiveFilter(colId);
+    fb.className='filter-btn'+(hasF?' has-filter':'');
+    while(fb.firstChild)fb.removeChild(fb.firstChild);
+    fb.appendChild(createFunnelIcon(hasF));
+  }
+
+  function renderHead(){
+    var thead=document.getElementById('tableHead');
+    while(thead.firstChild)thead.removeChild(thead.firstChild);
+    var row=document.createElement('tr');
+    var thN=document.createElement('th');thN.textContent='#';row.appendChild(thN);
+    for(var i=0;i<activeColumns.length;i++){
+      (function(colId,idx){
+        var field=FIELD_MAP[colId];
+        var th=document.createElement('th');
+        th.className='draggable';
+        th.setAttribute('draggable','true');
+        th.dataset.colIndex=idx;
+        th.dataset.colId=colId;
+
+        var inner=document.createElement('div');inner.className='th-inner';
+
+        // drag handle
+        var dh=document.createElement('span');dh.className='drag-handle';dh.textContent='≡';inner.appendChild(dh);
+
+        // label → sort on click
+        var lbl=document.createElement('span');lbl.className='th-label';lbl.textContent=field.label;
+        lbl.addEventListener('click',function(e){e.stopPropagation();onSortClick(colId);});
+        inner.appendChild(lbl);
+
+        // sort icon
+        var si=document.createElement('span');si.className='sort-icon';
+        if(sortState.id===colId){si.textContent=sortState.dir==='asc'?'↑':'↓';th.classList.add(sortState.dir==='asc'?'sorted-asc':'sorted-desc');}
+        else si.textContent='↕';
+        inner.appendChild(si);
+
+        // filter button → opens popover
+        var hasFilter=hasActiveFilter(colId);
+        var fb=document.createElement('button');
+        fb.className='filter-btn'+(hasFilter?' has-filter':'');
+        fb.title='Filtra per '+field.label;
+        fb.appendChild(createFunnelIcon(hasFilter));
+        fb.addEventListener('click',function(e){e.stopPropagation();openFilterPopover(colId,th);});
+        inner.appendChild(fb);
+
+        th.appendChild(inner);
+        th.addEventListener('dragstart',onThDragStart);
+        th.addEventListener('dragover',onThDragOver);
+        th.addEventListener('dragenter',onThDragEnter);
+        th.addEventListener('dragleave',onThDragLeave);
+        th.addEventListener('drop',onThDrop);
+        th.addEventListener('dragend',onThDragEnd);
+        row.appendChild(th);
+      })(activeColumns[i],i);
+    }
+    thead.appendChild(row);
+  }
+
+  function renderBody(){
+    var tbody=document.getElementById('tableBody');
+    while(tbody.firstChild)tbody.removeChild(tbody.firstChild);
+    if(invoices.length===0){
+      var r=document.createElement('tr'),ec=document.createElement('td');
+      ec.setAttribute('colspan',String(activeColumns.length+1));ec.className='empty-state';
+      ec.textContent='Nessuna fattura. Incolla un XML nell\'area di testo qui sopra.';
+      r.appendChild(ec);tbody.appendChild(r);return;
+    }
+    var displayed=getDisplayedInvoices();
+    if(displayed.length===0){
+      var r2=document.createElement('tr'),nc=document.createElement('td');
+      nc.setAttribute('colspan',String(activeColumns.length+1));nc.className='empty-state';
+      nc.textContent='Nessun risultato con i filtri attivi.';
+      r2.appendChild(nc);tbody.appendChild(r2);return;
+    }
+    for(var i=0;i<displayed.length;i++){
+      var inv=displayed[i],tr=document.createElement('tr');
+      var tdN=document.createElement('td');tdN.className='mono';tdN.textContent=String(i+1);tr.appendChild(tdN);
+      for(var ci=0;ci<activeColumns.length;ci++){
+        var fid=activeColumns[ci],field=FIELD_MAP[fid],td=document.createElement('td');
+        if(field.mono)td.className='mono';
+        td.textContent=formatValue(fid,inv[fid]);
+        tr.appendChild(td);
       }
+      tbody.appendChild(tr);
     }
-    var textarea = document.getElementById('xmlInput');
-    textarea.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = 'copy'; textarea.classList.add('dragover'); });
-    textarea.addEventListener('dragleave', function(e) { e.preventDefault(); textarea.classList.remove('dragover'); });
-    textarea.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); textarea.classList.remove('dragover'); if (e.dataTransfer.files && e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files); });
+  }
 
-    // =============================================
-    // INIT
-    // =============================================
-    renderTable();
-    renderFieldChips();
-  </script>
+  // =============================================
+  // FILTER POPOVER
+  // =============================================
+  function openFilterPopover(colId,thEl){
+    if(activeFilterCol===colId){closeFilterPopover();return;}
+    activeFilterCol=colId;
+    var popover=document.getElementById('filterPopover');
+    var field=FIELD_MAP[colId];
+    var type=field?field.format:'text';
+    document.getElementById('fpLabel').textContent='Filtra · '+field.label;
+
+    // show correct mode
+    document.getElementById('fpTextMode').style.display=(type==='date'||type==='currency')?'none':'';
+    document.getElementById('fpDateMode').style.display=type==='date'?'':'none';
+    document.getElementById('fpCurrencyMode').style.display=type==='currency'?'':'none';
+
+    var fs=filterState[colId]||{};
+    var focusEl;
+    if(type==='date'){
+      document.getElementById('fpDateFrom').value=fs.from||'';
+      document.getElementById('fpDateTo').value=fs.to||'';
+      focusEl=document.getElementById('fpDateFrom');
+    } else if(type==='currency'){
+      document.getElementById('fpCurrencyMin').value=fs.min||'';
+      document.getElementById('fpCurrencyMax').value=fs.max||'';
+      focusEl=document.getElementById('fpCurrencyMin');
+    } else {
+      var inp=document.getElementById('fpInput');
+      inp.value='';
+      renderFpTags();
+      focusEl=inp;
+    }
+
+    var rect=thEl.getBoundingClientRect();
+    var pw=240;
+    var left=rect.left;
+    if(left+pw>window.innerWidth-8)left=window.innerWidth-pw-8;
+    popover.style.top=(rect.bottom+4)+'px';
+    popover.style.left=left+'px';
+    popover.classList.add('open');
+    setTimeout(function(){focusEl.focus();},20);
+  }
+
+  function closeFilterPopover(){
+    document.getElementById('filterPopover').classList.remove('open');
+    activeFilterCol=null;
+  }
+
+  function renderFpTags(){
+    var container=document.getElementById('fpTags');
+    while(container.firstChild)container.removeChild(container.firstChild);
+    if(!activeFilterCol)return;
+    var tags=filterState[activeFilterCol]||[];
+    tags.forEach(function(tag){
+      var chip=document.createElement('span');chip.className='fp-tag';
+      chip.appendChild(document.createTextNode(tag));
+      var x=document.createElement('button');x.className='fp-tag-x';x.textContent='×';x.title='Rimuovi';
+      x.addEventListener('click',function(e){e.stopPropagation();removeFilterTag(activeFilterCol,tag);});
+      chip.appendChild(x);
+      container.appendChild(chip);
+    });
+  }
+
+  function removeFilterTag(colId,tag){
+    if(!filterState[colId])return;
+    filterState[colId]=filterState[colId].filter(function(t){return t!==tag;});
+    if(filterState[colId].length===0)delete filterState[colId];
+    refreshFilterBtn(colId);
+    renderFpTags();
+    renderBody();updateCounter();
+  }
+
+  document.getElementById('fpInput').addEventListener('keydown',function(e){
+    if(e.key!=='Enter')return;
+    e.preventDefault();
+    if(!activeFilterCol)return;
+    var val=this.value.trim();
+    if(!val)return;
+    if(!filterState[activeFilterCol])filterState[activeFilterCol]=[];
+    if(filterState[activeFilterCol].indexOf(val)===-1){
+      filterState[activeFilterCol].push(val);
+      refreshFilterBtn(activeFilterCol);
+      renderFpTags();
+      renderBody();updateCounter();
+    }
+    this.value='';
+  });
+
+  function onRangeChange(){
+    if(!activeFilterCol)return;
+    var field=FIELD_MAP[activeFilterCol];
+    var type=field?field.format:'text';
+    if(type==='date'){
+      var from=document.getElementById('fpDateFrom').value;
+      var to=document.getElementById('fpDateTo').value;
+      if(from||to)filterState[activeFilterCol]={from:from,to:to};
+      else delete filterState[activeFilterCol];
+    } else if(type==='currency'){
+      var min=document.getElementById('fpCurrencyMin').value;
+      var max=document.getElementById('fpCurrencyMax').value;
+      if(min!==''||max!=='')filterState[activeFilterCol]={min:min,max:max};
+      else delete filterState[activeFilterCol];
+    }
+    refreshFilterBtn(activeFilterCol);
+    renderBody();updateCounter();
+  }
+  document.getElementById('fpDateFrom').addEventListener('input',onRangeChange);
+  document.getElementById('fpDateTo').addEventListener('input',onRangeChange);
+  document.getElementById('fpCurrencyMin').addEventListener('input',onRangeChange);
+  document.getElementById('fpCurrencyMax').addEventListener('input',onRangeChange);
+
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.filter-popover')&&!e.target.closest('.filter-btn')&&!e.target.closest('.dropdown'))
+      {closeFilterPopover();closeAllDropdowns();}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeFilterPopover();closeAllDropdowns();}});
+
+  // =============================================
+  // SORT
+  // =============================================
+  function onSortClick(colId){
+    if(dragJustHappened){dragJustHappened=false;return;}
+    if(sortState.id===colId){if(sortState.dir==='asc')sortState.dir='desc';else{sortState.id=null;sortState.dir=null;}}
+    else{sortState.id=colId;sortState.dir='asc';}
+    renderHead();renderBody();updateCounter();
+  }
+
+  // =============================================
+  // DRAG & DROP
+  // =============================================
+  function onThDragStart(e){dragSrcIndex=parseInt(this.dataset.colIndex);this.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(dragSrcIndex));}
+  function onThDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
+  function onThDragEnter(e){e.preventDefault();this.classList.add('drag-over');}
+  function onThDragLeave(){this.classList.remove('drag-over');}
+  function onThDrop(e){
+    e.preventDefault();e.stopPropagation();this.classList.remove('drag-over');
+    var ti=parseInt(this.dataset.colIndex);if(dragSrcIndex===null||dragSrcIndex===ti)return;
+    var moved=activeColumns.splice(dragSrcIndex,1)[0];activeColumns.splice(ti,0,moved);
+    dragJustHappened=true;renderAll();
+  }
+  function onThDragEnd(){
+    this.classList.remove('dragging');
+    document.querySelectorAll('th.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+    dragSrcIndex=null;setTimeout(function(){dragJustHappened=false;},50);
+  }
+
+  // =============================================
+  // COLUMN PICKER
+  // =============================================
+  function renderColPicker(){
+    var picker=document.getElementById('colPicker');
+    while(picker.firstChild)picker.removeChild(picker.firstChild);
+    var hint=document.createElement('div');hint.className='col-picker-hint';hint.textContent='Clicca per mostrare/nascondere';picker.appendChild(hint);
+    var ordered=[];
+    activeColumns.forEach(function(id){ordered.push({field:FIELD_MAP[id],active:true});});
+    var inactive=FIELDS.filter(function(f){return activeColumns.indexOf(f.id)===-1;});
+    inactive.sort(function(a,b){return a.label.localeCompare(b.label,'it',{sensitivity:'base'});});
+    inactive.forEach(function(f){ordered.push({field:f,active:false});});
+    ordered.forEach(function(item){
+      var chip=document.createElement('button');
+      chip.className='col-chip'+(item.active?' active':'');
+      chip.dataset.fieldId=item.field.id;
+      var icon=document.createElement('span');icon.className='ci';icon.textContent=item.active?'✓':'+';chip.appendChild(icon);
+      chip.appendChild(document.createTextNode(item.field.label));
+      chip.addEventListener('click',function(e){e.stopPropagation();onChipClick.call(this);});
+      picker.appendChild(chip);
+    });
+  }
+
+  function onChipClick(){
+    var fid=this.dataset.fieldId,idx=activeColumns.indexOf(fid);
+    if(idx!==-1){
+      if(activeColumns.length<=1){showToast('Devi avere almeno una colonna.','error');return;}
+      activeColumns.splice(idx,1);delete filterState[fid];
+      if(sortState.id===fid){sortState.id=null;sortState.dir=null;}
+    } else activeColumns.push(fid);
+    renderAll();renderColPicker();
+  }
+
+  // =============================================
+  // DROPDOWNS
+  // =============================================
+  function toggleDropdown(id){var m=document.getElementById(id).querySelector('.dropdown-menu');var o=m.classList.contains('open');closeAllDropdowns();if(!o)m.classList.add('open');}
+  function closeDropdown(id){document.getElementById(id).querySelector('.dropdown-menu').classList.remove('open');}
+  function closeAllDropdowns(){document.querySelectorAll('.dropdown-menu.open').forEach(function(m){m.classList.remove('open');});}
+
+  // =============================================
+  // COPY & EXPORT
+  // =============================================
+  function copyTable(){
+    var d=getDisplayedInvoices();if(d.length===0){showToast('Nessuna fattura da copiare.','error');return;}
+    var lines=[activeColumns.map(function(id){return FIELD_MAP[id].label;}).join('\t')];
+    d.forEach(function(inv){lines.push(activeColumns.map(function(id){return inv[id]||'';}).join('\t'));});
+    navigator.clipboard.writeText(lines.join('\n')).then(
+      function(){showToast('Tabella copiata! Incollala in Excel o Sheets.','success');},
+      function(){showToast('Errore nella copia. Riprova.','error');}
+    );
+  }
+  function getExportData(){
+    return getDisplayedInvoices().map(function(inv){
+      var row={};
+      activeColumns.forEach(function(id){var f=FIELD_MAP[id],v=inv[id]||'';if(f.format==='currency'&&v)row[f.label]=parseFloat(v)||v;else if(f.format==='date'&&v)row[f.label]=formatDate(v);else row[f.label]=v;});
+      return row;
+    });
+  }
+  function exportXLSX(){
+    if(invoices.length===0){showToast('Nessuna fattura da esportare.','error');return;}
+    var ws=XLSX.utils.json_to_sheet(getExportData());ws['!cols']=activeColumns.map(function(){return{wch:22};});
+    var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Fatture');
+    XLSX.writeFile(wb,'fatture_'+getTimestamp()+'.xlsx');showToast('File .xlsx esportato.','success');
+  }
+  function exportCSV(){
+    if(invoices.length===0){showToast('Nessuna fattura da esportare.','error');return;}
+    var csv=XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(getExportData()),{FS:';'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='fatture_'+getTimestamp()+'.csv';a.click();
+    showToast('File .csv esportato.','success');
+  }
+  function getTimestamp(){var d=new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+
+  // =============================================
+  // CLEAR & TOAST
+  // =============================================
+  function clearAll(){
+    if(invoices.length===0)return;
+    document.getElementById('confirmDialog').classList.add('open');
+  }
+  function confirmClearAll(){
+    closeConfirmDialog();
+    invoices.length=0;filterState={};sortState={id:null,dir:null};closeFilterPopover();
+    renderAll();showToast('Tabella svuotata.','success');
+  }
+  function closeConfirmDialog(){
+    document.getElementById('confirmDialog').classList.remove('open');
+  }
+  document.getElementById('confirmDialog').addEventListener('click',function(e){
+    if(e.target===this)closeConfirmDialog();
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeConfirmDialog();});
+  function showToast(msg,type){
+    var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';
+    setTimeout(function(){t.classList.remove('show');},2500);
+  }
+
+  // =============================================
+  // FILE DRAG & DROP
+  // =============================================
+  function handleFiles(files){
+    if(!files||files.length===0)return;
+    var pending=files.length,allText='';
+    for(var i=0;i<files.length;i++){
+      (function(file){
+        var reader=new FileReader();
+        reader.onload=function(ev){allText+=ev.target.result+'\n';pending--;if(pending===0){document.getElementById('xmlInput').value=allText;processXML();document.getElementById('fileInput').value='';}};
+        reader.onerror=function(){pending--;showToast('Errore lettura: '+file.name,'error');if(pending===0&&allText){document.getElementById('xmlInput').value=allText;processXML();}};
+        reader.readAsText(file);
+      })(files[i]);
+    }
+  }
+  var ta=document.getElementById('xmlInput');
+  ta.addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();e.dataTransfer.dropEffect='copy';ta.classList.add('dragover');});
+  ta.addEventListener('dragleave',function(e){e.preventDefault();ta.classList.remove('dragover');});
+  ta.addEventListener('drop',function(e){e.preventDefault();e.stopPropagation();ta.classList.remove('dragover');if(e.dataTransfer.files&&e.dataTransfer.files.length>0)handleFiles(e.dataTransfer.files);});
+  ta.addEventListener('blur',function(){if(ta.value.trim())processXML();});
+
+  // INIT
+  renderAll();
+
+  // =============================================
+  // (cat removed)
+  // =============================================
+  false&&(function(){
+    var cvs=document.createElement('canvas');
+    cvs.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9998;';
+    document.body.appendChild(cvs);
+    var ctx=cvs.getContext('2d');
+    var W=0,H=0;
+    function resize(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;}
+    resize();
+    window.addEventListener('resize',function(){
+      resize();
+      cat.x=Math.min(cat.x,W-90);cat.y=Math.min(cat.y,H-90);
+      cat.tx=Math.min(cat.tx,W-90);cat.ty=Math.min(cat.ty,H-90);
+    });
+
+    var mx=-9999,my=-9999;
+    document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+
+    // deterministic RNG (consistent fur across frames)
+    var _s=98765;function rnd(){_s^=_s<<13;_s^=_s>>17;_s^=_s<<5;return(_s>>>0)/4294967296;}
+
+    // chibi style – no fur arrays needed
+    // just tail stripe t-positions (evaluated dynamically at render time)
+    var TAIL_STRIPES=[0.26,0.50,0.74];
+
+    var cat={
+      x:200,y:500,tx:200,ty:500,
+      dir:1,state:'idle',walkPhase:0,nextMove:5000,
+      tailPhase:0,breathPhase:0,
+      pawProgress:0,pawAngle:0,
+      eyeOX:0,eyeOY:0,headTilt:0,
+      blinkOpen:1,blinkTimer:3000,blinkState:'open'
+    };
+
+    function pickTarget(){
+      var m=80;
+      cat.tx=m+Math.random()*(W-m*2);
+      cat.ty=Math.max(130,m+Math.random()*(H-m*2));
+      cat.state='walking';
+    }
+
+    var prevT=null;
+    function tick(t){
+      if(!prevT)prevT=t;
+      var dt=Math.min(t-prevT,50);prevT=t;
+      ctx.clearRect(0,0,W,H);
+
+      cat.tailPhase+=dt*0.0020;
+      cat.breathPhase+=dt*0.0012;
+
+      // blink
+      cat.blinkTimer-=dt;
+      if(cat.blinkState==='open'&&cat.blinkTimer<=0)cat.blinkState='closing';
+      if(cat.blinkState==='closing'){cat.blinkOpen-=dt*0.028;if(cat.blinkOpen<=0){cat.blinkOpen=0;cat.blinkState='opening';}}
+      if(cat.blinkState==='opening'){cat.blinkOpen+=dt*0.018;if(cat.blinkOpen>=1){cat.blinkOpen=1;cat.blinkState='open';cat.blinkTimer=2500+Math.random()*7000;}}
+
+      // movement
+      if(cat.state==='walking'){
+        var dx=cat.tx-cat.x,dy=cat.ty-cat.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<5){cat.x=cat.tx;cat.y=cat.ty;cat.state='idle';cat.nextMove=5000+Math.random()*14000;cat.walkPhase=0;}
+        else{var spd=80*dt/1000;cat.x+=dx/dist*spd;cat.y+=dy/dist*spd;cat.dir=dx>0?1:-1;cat.walkPhase+=dt*0.009;}
+      } else {cat.nextMove-=dt;if(cat.nextMove<=0)pickTarget();}
+
+      var bounce=cat.state==='walking'?Math.sin(cat.walkPhase)*3:Math.sin(cat.breathPhase)*1.2;
+
+      // eye + head tracking (local cat space)
+      var hx=cat.x+cat.dir*10,hy=cat.y+bounce-26;
+      var dxW=mx-hx,dyW=my-hy,dxL=dxW*cat.dir,dyL=dyW;
+      var dL=Math.sqrt(dxL*dxL+dyL*dyL);
+      var ep=Math.min(3.5,dL*0.09);
+      cat.eyeOX=dL>1?(dxL/dL)*ep:0;cat.eyeOY=dL>1?(dyL/dL)*ep:0;
+      var tgt=dL<300?Math.atan2(dyL,dxL)*0.06:0;
+      cat.headTilt+=(tgt-cat.headTilt)*dt*0.005;
+
+      // paw reach
+      var cdx=mx-cat.x,cdy=my-cat.y,cdist=Math.sqrt(cdx*cdx+cdy*cdy);
+      var reach=cdist<120&&cat.state==='idle';
+      cat.pawProgress+=((reach?1:0)-cat.pawProgress)*dt*0.007;
+      if(reach)cat.pawAngle=Math.atan2(cdy,cdx*cat.dir);
+
+      drawCat(bounce);
+      requestAnimationFrame(tick);
+    }
+
+    function drawCat(bounce){
+      var x=cat.x,y=cat.y+(bounce||0),dir=cat.dir;
+      var ts=Math.sin(cat.tailPhase);
+
+      // chibi / pusheen palette
+      var OL='#303040';   // outline
+      var BG='#ffffff';   // white fill
+      var S1='#ddd8ee';   // soft stripe / belly
+      var PK='#f8b0c4';   // pink
+      var LW=2.8;         // base lineWidth
+
+      // helpers
+      function fs(c,lw){ctx.fillStyle=c||BG;ctx.fill();ctx.strokeStyle=OL;ctx.lineWidth=lw||LW;ctx.stroke();}
+      function rr(rx2,ry2,rw,rh,r){ctx.beginPath();ctx.moveTo(rx2+r,ry2);ctx.lineTo(rx2+rw-r,ry2);ctx.arcTo(rx2+rw,ry2,rx2+rw,ry2+r,r);ctx.lineTo(rx2+rw,ry2+rh-r);ctx.arcTo(rx2+rw,ry2+rh,rx2+rw-r,ry2+rh,r);ctx.lineTo(rx2+r,ry2+rh);ctx.arcTo(rx2,ry2+rh,rx2,ry2+rh-r,r);ctx.lineTo(rx2,ry2+r);ctx.arcTo(rx2,ry2,rx2+r,ry2,r);ctx.closePath();}
+      function bezPt(p0x,p0y,p1x,p1y,p2x,p2y,p3x,p3y,t){var mt=1-t,mt2=mt*mt,t2=t*t;var bx=mt2*mt*p0x+3*mt2*t*p1x+3*mt*t2*p2x+t2*t*p3x;var by=mt2*mt*p0y+3*mt2*t*p1y+3*mt*t2*p2y+t2*t*p3y;var ttx=3*(mt2*(p1x-p0x)+2*mt*t*(p2x-p1x)+t2*(p3x-p2x));var tty=3*(mt2*(p1y-p0y)+2*mt*t*(p2y-p1y)+t2*(p3y-p2y));var tl=Math.sqrt(ttx*ttx+tty*tty)||1;return{x:bx,y:by,nx:-tty/tl,ny:ttx/tl};}
+
+      var t1x=-40+ts*36,t1y=-10+ts*6;
+
+      ctx.save();
+      ctx.translate(x,y);
+      if(dir===-1)ctx.scale(-1,1);
+      ctx.lineCap='round';ctx.lineJoin='round';
+
+      // tail control points
+      var tp1x=-38,tp1y=22+ts*20,tp2x=-50+ts*22,tp2y=4+ts*10;
+
+      // ── SHADOW ───────────────────────────
+      ctx.fillStyle='rgba(0,0,0,0.12)';
+      ctx.beginPath();ctx.ellipse(4,40,44,10,0,0,Math.PI*2);ctx.fill();
+
+      // ── TAIL (behind body) ───────────────
+      // white fill pass
+      ctx.beginPath();ctx.moveTo(-18,12);ctx.bezierCurveTo(tp1x,tp1y,tp2x,tp2y,t1x,t1y);
+      ctx.strokeStyle=BG;ctx.lineWidth=13;ctx.stroke();
+      ctx.strokeStyle=OL;ctx.lineWidth=LW;ctx.stroke();
+      // stripe rings
+      TAIL_STRIPES.forEach(function(t){
+        var pt=bezPt(-18,12,tp1x,tp1y,tp2x,tp2y,t1x,t1y,t);
+        ctx.beginPath();ctx.moveTo(pt.x-pt.nx*7,pt.y-pt.ny*7);ctx.lineTo(pt.x+pt.nx*7,pt.y+pt.ny*7);
+        ctx.strokeStyle=S1;ctx.lineWidth=4;ctx.stroke();
+        ctx.strokeStyle=OL;ctx.lineWidth=0.8;ctx.stroke();
+      });
+      // tip circle
+      ctx.beginPath();ctx.arc(t1x,t1y,7,0,Math.PI*2);
+      fs(BG,LW*0.9);
+
+      // ── BACK LEGS (behind body) ───────────
+      var isW=cat.state==='walking',wp=cat.walkPhase;
+      var la=isW?Math.sin(wp)*6:0,lb=isW?Math.sin(wp+Math.PI)*6:0;
+      rr(-22,26+la,14,13,6);fs(S1,LW*0.75);
+      rr(12,26+lb,14,13,6);fs(S1,LW*0.75);
+
+      // ── BODY ─────────────────────────────
+      ctx.beginPath();ctx.ellipse(4,8,37,31,0,0,Math.PI*2);
+      fs(BG,LW);
+      // belly patch
+      ctx.beginPath();ctx.ellipse(4,14,22,17,0,0,Math.PI*2);
+      ctx.fillStyle=S1;ctx.globalAlpha=0.28;ctx.fill();ctx.globalAlpha=1;
+
+      // ── FRONT LEGS ───────────────────────
+      rr(-16,28,14,13,6);fs(BG,LW*0.85);
+      rr(5,29,14,13,6);fs(BG,LW*0.85);
+      // toe lines on front legs
+      ctx.strokeStyle=OL;ctx.lineWidth=0.9;ctx.lineCap='round';ctx.globalAlpha=0.4;
+      [[-9,42],[12,43]].forEach(function(lc){
+        [-3.5,0,3.5].forEach(function(ox2){
+          ctx.beginPath();ctx.moveTo(lc[0]+ox2,lc[1]-2);ctx.lineTo(lc[0]+ox2,lc[1]+2);ctx.stroke();
+        });
+      });
+      ctx.globalAlpha=1;
+
+      // ── EARS (behind head, then head redrawn on top) ──
+      function drawEar(ex,ey,flip){
+        var es=flip?-1:1;
+        // outer ear
+        ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-11*es,ey-22);ctx.lineTo(ex+13*es,ey-19);ctx.closePath();
+        fs(BG,LW);
+        // pink inner
+        ctx.beginPath();ctx.moveTo(ex-1*es,ey-2);ctx.lineTo(ex-6*es,ey-16);ctx.lineTo(ex+7*es,ey-13);ctx.closePath();
+        ctx.fillStyle=PK;ctx.globalAlpha=0.72;ctx.fill();ctx.globalAlpha=1;
+      }
+      drawEar(2,-40,false);drawEar(24,-42,true);
+
+      // ── HEAD ─────────────────────────────
+      ctx.save();ctx.translate(12,-22);ctx.rotate(cat.headTilt);
+      ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);
+      fs(BG,LW);
+
+      // forehead stripes (3 curved marks)
+      ctx.strokeStyle=S1;ctx.lineWidth=2.0;ctx.lineCap='round';
+      [[-9,-16,0,-19,9,-16],[-9,-11,0,-14,9,-11],[-8,-6,0,-9,8,-6]].forEach(function(s){
+        ctx.beginPath();ctx.moveTo(s[0],s[1]);ctx.quadraticCurveTo(s[2],s[3],s[4],s[5]);ctx.stroke();
+      });
+
+      // ── EYES ─────────────────────────────
+      var eo=cat.blinkOpen,ox=cat.eyeOX*0.5,oy=cat.eyeOY*0.5;
+      var eH=Math.max(0.18,eo);
+      function drawEye(ex,ey){
+        // sclera
+        ctx.beginPath();ctx.ellipse(ex,ey,6.5,6.5*eH,0,0,Math.PI*2);
+        ctx.fillStyle=BG;ctx.fill();ctx.strokeStyle=OL;ctx.lineWidth=1.6;ctx.stroke();
+        if(eo>0.12){
+          // pupil
+          ctx.fillStyle=OL;
+          ctx.beginPath();ctx.ellipse(ex+ox,ey+oy,4,4.5*eH,0,0,Math.PI*2);ctx.fill();
+          // highlight
+          ctx.fillStyle=BG;
+          ctx.beginPath();ctx.arc(ex+ox-1.5,ey+oy-1.8,1.5,0,Math.PI*2);ctx.fill();
+        }
+      }
+      drawEye(-9,-4);drawEye(9,-4);
+
+      // cheek blush
+      ctx.fillStyle='rgba(255,130,155,0.18)';
+      ctx.beginPath();ctx.ellipse(-15,-1,7,5,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(15,-1,7,5,0,0,Math.PI*2);ctx.fill();
+
+      // ── NOSE ─────────────────────────────
+      ctx.beginPath();ctx.ellipse(0,4.5,3.5,2.8,0,0,Math.PI*2);
+      ctx.fillStyle=PK;ctx.fill();
+
+      // ── MOUTH ────────────────────────────
+      ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(0,7);ctx.bezierCurveTo(-2,9,-6,10,-8,9);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,7);ctx.bezierCurveTo(2,9,6,10,8,9);ctx.stroke();
+
+      // ── WHISKERS ─────────────────────────
+      ctx.strokeStyle=OL;ctx.lineWidth=0.85;ctx.lineCap='round';ctx.globalAlpha=0.55;
+      [[-4,3,-26,1.5],[-4,5.5,-26,5.5],[-4,8,-25,9]].forEach(function(w){
+        ctx.beginPath();ctx.moveTo(w[0],w[1]);ctx.lineTo(w[2],w[3]);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(-w[0],w[1]);ctx.lineTo(-w[2],w[3]);ctx.stroke();
+      });
+      ctx.globalAlpha=1;
+
+      ctx.restore(); // head
+
+      // ── REACHING PAW ─────────────────────
+      if(cat.pawProgress>0.02){
+        var pr=cat.pawProgress,pa=cat.pawAngle,al=42*pr;
+        var pwx=12+Math.cos(pa)*al,pwy=2+Math.sin(pa)*al;
+        // arm
+        ctx.beginPath();ctx.moveTo(12,2);ctx.lineTo(pwx,pwy);
+        ctx.strokeStyle=BG;ctx.lineWidth=12;ctx.stroke();
+        ctx.strokeStyle=OL;ctx.lineWidth=LW;ctx.stroke();
+        // paw circle
+        ctx.beginPath();ctx.arc(pwx,pwy,10,0,Math.PI*2);
+        fs(BG,LW);
+        // toe beans
+        ctx.lineWidth=0.9;
+        [[pwx,pwy+4.5,4,3],[pwx-4,pwy-2,2.5,2.5],[pwx+4,pwy-2,2.5,2.5],[pwx,pwy-5,2.5,2.5]].forEach(function(tb,i){
+          ctx.beginPath();ctx.ellipse(tb[0],tb[1],tb[2],tb[3],0,0,Math.PI*2);
+          ctx.fillStyle=PK;ctx.fill();ctx.strokeStyle=OL;ctx.stroke();
+        });
+      }
+
+      ctx.restore(); // main
+    }
+
+    setTimeout(function(){
+      cat.x=cat.tx=100+Math.random()*(W-200);
+      cat.y=cat.ty=Math.max(140,H-95);
+      requestAnimationFrame(tick);
+    },400);
+  })();
+</script>
 </body>
 </html>
