@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { AsciiPenguin } from "@/components/ascii-penguin";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,7 +42,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <TooltipProvider delayDuration={200}>
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <div className="relative flex flex-1 flex-col">
+              <AsciiPenguin />
+              <main className="flex-1">{children}</main>
+            </div>
             <SiteFooter />
             <Toaster position="bottom-right" />
           </TooltipProvider>
