@@ -1,4 +1,6 @@
-# 🐧 ToolboxSuite.work
+# 🐧 ToolboxSuite
+
+🔗 **Live:** https://mattialicciardi.github.io/ToolboxSuite/
 
 Raccolta di strumenti web per velocizzare il lavoro quotidiano.
 Tutto gira nel browser — nessun backend, nessun dato inviato a server.
@@ -57,7 +59,7 @@ Parser per fatture elettroniche italiane in formato **FatturaPA** (standard Agen
 
 ```
 ToolboxSuite/
-├── index.html          # Landing page – ToolboxSuite.work
+├── index.html          # Landing page – ToolboxSuite
 ├── invoice-xml.html    # Strumento: parser fatture XML FatturaPA
 ├── README.md           # Questo file
 └── LICENSE             # Licenza MIT
