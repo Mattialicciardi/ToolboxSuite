@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Lock, Zap } from "lucide-react";
 
 import { GithubIcon } from "@/components/brand-icons";
-import { AsciiLogo } from "@/components/ascii-logo";
+import { InteractiveBackground } from "@/components/interactive-background";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,9 +36,9 @@ const PILLARS = [
 export default function Home() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-      <AsciiLogo className="hidden pt-8 sm:block" />
+      <InteractiveBackground />
 
-      <section className="border-b py-10 sm:py-14">
+      <section className="border-b py-14 sm:py-20">
         <Badge variant="secondary" className="mb-4">
           Open source · MIT
         </Badge>

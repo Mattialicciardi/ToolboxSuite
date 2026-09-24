@@ -128,3 +128,51 @@
     @apply font-sans;
   }
 }
+/* Sfondo interattivo: griglia di punti che si illumina attorno al cursore.
+   Le coordinate arrivano da InteractiveBackground come custom properties,
+   aggiornate fuori da React per non ri-renderizzare a ogni movimento. */
+.bg-grid {
+  --mx: 50vw;
+  --my: 33vh;
+  --spot-opacity: 0;
+  --dot: color-mix(in oklab, var(--foreground) 22%, transparent);
+  --spot: color-mix(in oklab, var(--color-emerald-500) 55%, transparent);
+
+  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  /* la maschera tiene i punti solo vicino al cursore: il resto sfuma via */
+  mask-image: radial-gradient(
+    260px circle at var(--mx) var(--my),
+    #000 0%,
+    color-mix(in srgb, #000 35%, transparent) 55%,
+    transparent 78%
+  );
+  opacity: var(--spot-opacity);
+  transition: opacity 300ms ease-out;
+}
+
+/* l'alone colorato che segue il puntatore, sopra la griglia */
+.bg-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    var(--spot) 0%,
+    transparent 70%
+  );
+  opacity: 0.35;
+}
+
+.dark .bg-grid {
+  --dot: color-mix(in oklab, var(--foreground) 30%, transparent);
+  --spot: color-mix(in oklab, var(--color-emerald-400) 45%, transparent);
+}
+
+/* Senza cursore (touch) o con animazioni ridotte l'effetto non ha senso:
+   lo spot resterebbe fermo in un angolo. */
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .bg-grid {
+    display: none;
+  }
+}
