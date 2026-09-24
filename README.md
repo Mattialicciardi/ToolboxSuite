@@ -101,7 +101,8 @@ Per aggiungere un tool: crea la pagina sotto `src/app/<slug>/` e registrala in `
 ## Deploy
 
 Push su `main` → GitHub Actions (`.github/workflows/deploy.yml`) esegue il build statico
-e pubblica `out/` su GitHub Pages. Su GitHub: **Settings → Pages → Source: GitHub Actions**.
+e pubblica `out/` su GitHub Pages. La sorgente Pages del repository è già impostata su
+**GitHub Actions**: non serve alcuna configurazione manuale.
 
 La vecchia URL `invoice-xml.html` reindirizza a `/fatture-xml/`.
 

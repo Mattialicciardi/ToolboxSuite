@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Lock, Zap } from "lucide-react";
 
 import { GithubIcon } from "@/components/brand-icons";
+import { AsciiPenguin, type PenguinVariant } from "@/components/ascii-penguin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,37 +33,47 @@ const PILLARS = [
   },
 ];
 
+// Variante del Tux mostrata nell'hero.
+const HERO_PENGUIN: PenguinVariant = "small";
+
 export default function Home() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-      <section className="border-b py-14 sm:py-20">
-        <Badge variant="secondary" className="mb-4">
-          Open source · MIT
-        </Badge>
-        <h1 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
-          Strumenti che fanno una cosa sola, e la fanno nel tuo browser.
-        </h1>
-        <p className="text-muted-foreground mt-3 max-w-xl text-sm sm:text-base">
-          Utility per il lavoro quotidiano, senza registrazione e senza backend. I tuoi file
-          restano sul tuo computer.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild>
-            <Link href={TOOLS[0].href}>
-              Apri {TOOLS[0].title}
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <a
-              href="https://github.com/Mattialicciardi/ToolboxSuite"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Vedi il codice
-            </a>
-          </Button>
+      <section className="grid items-center gap-8 border-b py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+        <div>
+          <Badge variant="secondary" className="mb-4">
+            Open source · MIT
+          </Badge>
+          <h1 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+            Strumenti che fanno una cosa sola, e la fanno nel tuo browser.
+          </h1>
+          <p className="text-muted-foreground mt-3 max-w-xl text-sm sm:text-base">
+            Utility per il lavoro quotidiano, senza registrazione e senza backend. I tuoi file
+            restano sul tuo computer.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href={TOOLS[0].href}>
+                Apri {TOOLS[0].title}
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <a
+                href="https://github.com/Mattialicciardi/ToolboxSuite"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Vedi il codice
+              </a>
+            </Button>
+          </div>
         </div>
+
+        <AsciiPenguin
+          variant={HERO_PENGUIN}
+          className="hidden justify-self-center text-[0.72rem] lg:block lg:justify-self-end"
+        />
       </section>
 
       <section className="py-10 sm:py-14">
